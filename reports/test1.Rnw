@@ -1,0 +1,181 @@
+\documentclass[12pt]{article}         % the type of document and font size (default 10pt)
+\usepackage[margin=1.0in]{geometry}   % sets all margins to 1in, can be changed
+\usepackage{moreverb}                 % for verbatimtabinput -- LaTeX environment
+\usepackage{url}                      % for \url{} command
+\usepackage{amssymb}                  % for many mathematical symbols
+\usepackage[pdftex]{lscape}           % for landscaped tables
+\usepackage{longtable}                % for tables that break over multiple pages
+\title{Gene report: SYNGAP}  % to specify title
+\author{Ben Callaghan}          % to specify author(s)
+\begin{document}                      % document begins here
+\SweaveOpts{concordance=TRUE}
+
+% If .nw file contains graphs: To specify that EPS/PDF graph files are to be 
+% saved to 'graphics' sub-folder
+%     NOTE: 'graphics' sub-folder must exist prior to Sweave step
+%\SweaveOpts{prefix.string=graphics/plot}
+
+% If .nw file contains graphs: to modify (shrink/enlarge} size of graphics 
+% file inserted
+%         NOTE: can be specified/modified before any graph chunk
+\setkeys{Gin}{width=1.0\textwidth}
+
+\maketitle              % makes the title
+%\tableofcontents        % inserts TOC (section, sub-section, etc numbers and titles)
+%\listoftables           % inserts LOT (numbers and captions)
+%\listoffigures          % inserts LOF (numbers and captions)
+%                        %     NOTE: graph chunk must be wrapped with \begin{figure}, 
+%                        %  \end{figure}, and \caption{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Where everything else goes
+
+\section{Prerun}
+
+<<echo = FALSE, results = hide>>=
+# SFARI gene and variant prioritisation
+# main.R is setup and source calls for all associated scripts
+# func.R and do.R have more detail for individual functions/tasks
+# Setup: Dependencies -----------------------------------------------------
+
+library(stringr)
+library(seqinr)
+library(ssh.utils)
+library("biomaRt")
+library(dplyr)
+library(xtable)
+library(gridExtra)
+library(ggplot2)
+
+
+# Setup: Options ----------------------------------------------------------
+
+# Gene is either a single string or a vector of strings (a gene list)
+# gene.list <- "PTEN" 
+
+
+gene.list <- data.frame(name = c("PTEN","TBR1", "GRIN2B", "DYRK1A","SYNGAP1"),
+                         transcript = c("NM_000314","NM_006593","NM_000834","NM_001396","NM_006772"),
+                         chromosome = c(10,2,12,21,6))
+i <- 5
+gene.i <- gene.list[i,]
+
+opt.annovar.cache = TRUE # If TRUE, check for cached copy of annovar in temp before rerunning 
+
+# Setup: Environment ------------------------------------------------------
+
+setwd("/home/bcallaghan/Projects/SFARI/")
+dir.home <- "/home/bcallaghan/Projects/SFARI/"
+dir.inputs <- "/home/bcallaghan/Projects/SFARI/inputs/"
+dir.outputs <- "/home/bcallaghan/Projects/SFARI/outputs/"
+dir.plots <- "/home/bcallaghan/Projects/SFARI/plots/"
+dir.cor.plots <- "/home/bcallaghan/Projects/SFARI/plots/corr"
+dir.temp <- "/home/bcallaghan/Projects/SFARI/temp/"
+
+path.fasta <- paste0(dir.inputs,gene.i$name,".fa")
+path.annovar.out <- paste0(dir.temp,gene.i$name,"_anno.hg19_multianno.csv")
+path.annovar.out2 <- paste0(dir.temp,gene.i$name,"_anno2.hg19_cadd_dropped")
+path.pp.out <- paste0(dir.inputs, gene.i$name, "PP.tsv")
+path.marv <- paste0(dir.inputs,"MARV_ASD_muts_hg19_multianno.csv")
+path.anno.in <- paste0(dir.temp,as.character(gene.i$name),"_anno_in")
+path.gene.metrics <- paste0(dir.outputs,"gene_level_info")
+
+
+# Setup: Tests ------------------------------------------------------------
+
+
+# Source Calls ------------------------------------------------------------
+
+@
+
+<<>>=
+source("func.R")
+source("load.R")
+@
+
+
+\section{Check inputs}
+
+If you want to see both the input and output, do this:
+
+<<>>=
+test.fasta <- compare_fastas(translated_cdna = cdna.translated, pp_file = snap2.res, bm_fasta = BM.fasta)
+test.files <- check_inputs()
+aaDisagreementChecker(vars.filtered,snap2.res)
+@
+
+\section{Check inputs}
+
+If you want to see both the input and output, do this:
+
+<<>>=
+test.fasta <- compare_fastas(translated_cdna = cdna.translated, pp_file = snap2.res, bm_fasta = BM.fasta)
+test.files <- check_inputs()
+aaDisagreementChecker(vars.filtered,snap2.res)
+@
+
+
+
+\section{Top Genes}
+
+<<>>=
+count(marv.res, Gene.refGene) %>% arrange(desc(n)) %>% filter(n>10)-> marv.genes
+print(marv.genes)
+library(xtable)
+xtable(marv.genes, caption = "Top genes")
+
+@
+If you want to see output, but no input, do this:
+
+<<echo = FALSE>>=
+runif(10)
+@
+
+If you want to see input, but no output, do this:
+
+<<results = hide>>=
+runif(13)
+@
+
+If you want to run some \textsf{R} code but hide the input/output from the reader then you can do both at the same time:
+
+<<echo = FALSE, results = hide>>=
+x <- 2:11
+y <- runif(10)
+@
+
+\bigskip   % leave some empty space (optional)
+
+and you can double-check that it worked later (if you like)
+
+<<keep.source = TRUE>>=
+x  # use keep.source=TRUE if you want comments printed
+y
+@
+
+If you want to write some \textsf{R} code but not have it evaluated at all then do this:
+
+<<eval = FALSE>>=
+# whatever you write here must be syntactically correct R code
+runif(1000000000000000000000000)
+@
+
+If you would like to include a figure that's generated completely by \textsf{R} code, then you can do something like the following.
+
+\begin{figure}
+<<echo = FALSE, fig = TRUE>>=
+plot(y ~ x)
+@
+\caption{Here is the plot we made}
+\end{figure}
+
+
+Sometimes we would like the output to look like \LaTeX\ output instead of \textsf{R} output.  In that case, do the following.
+
+<<results = tex>>=
+library(xtable)
+xtable(summary(lm(y ~ x)), caption = "Here is the table we made")
+@
+
+
+\end{document}
+
