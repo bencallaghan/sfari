@@ -35,12 +35,18 @@ write.table(mutfile,file = paste0(dir.temp,'mutationfile'))
 
 genomic_dna <- BMgene$transcript_exon_intron
 
-# Snap2 + annovar -------------------------------------------------------------------
+# Snap2 + All Annovar Info---------------------------------------------------------------
 
 # add cadd.phred
 annovar.res$CADD.phred <- sapply(strsplit(as.character(annovar.res2$V2), ","), function(x) x[2]) # add cadd phred scores to annovar results
 
 vars.filtered <- filterGenomicVariants(annovar.res,gene.i$name,gene.i$transcript) #Filter for correct isoform and exonic variants
+
+# Add coordinate string column and cdna positions
+vars.filtered$coordinate.string <- coordinate_strings(vars.filtered, 1, 2 , 3, 4, 5)
+cdnargx <- paste0(".*",gene.i$name,":",gene.i$transcript,":exon[0-9]+:c.([A-Z][0-9]+[A-Z]):p.[A-Z][0-9]+[A-Z].*")
+vars.filtered$cdna <- gsub(cdnargx,"\\1",vars.filtered$AAChange.refGene)
+
 # vars.filtered$CADD.phred <- phredScale2(vars.filtered$cadd)
 snap2.res$V3 <- gsub("[A-Z]([0-9]+)[A-Z]","\\1",snap2.res$V1)
 vars.filtered <- mergePredictProtein(vars.filtered,snap2.res)

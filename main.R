@@ -1,17 +1,24 @@
 # SFARI gene and variant prioritisation
 # main.R is setup and source calls for all associated scripts
 # func.R and do.R have more detail for individual functions/tasks
+
+
+
 # Setup: Dependencies -----------------------------------------------------
+
+source("https://bioconductor.org/biocLite.R")
+biocLite('biomaRt')
 
 library(stringr)
 library(seqinr)
 library(ssh.utils)
-library("biomaRt")
+library('biomaRt')
 library(dplyr)
 library(xtable)
 library(gridExtra)
 library(ggplot2)
 library(knitr)
+library(GGally)
 
 
 # Setup: Options ----------------------------------------------------------
@@ -27,16 +34,28 @@ i <- 5
 gene.i <- gene.list[i,]
 
 opt.annovar.cache = TRUE # If TRUE, check for cached copy of annovar in temp before rerunning 
+opt.generanks.cache = TRUE # If TRUE, check for existing final gene ranking
+opt.session.local = TRUE # If TRUE, change all dirs accordingly
 
 # Setup: Environment ------------------------------------------------------
 
-setwd("/home/bcallaghan/Projects/SFARI/")
-dir.home <- "/home/bcallaghan/Projects/SFARI/"
-dir.inputs <- "/home/bcallaghan/Projects/SFARI/inputs/"
-dir.outputs <- "/home/bcallaghan/Projects/SFARI/outputs/"
-dir.plots <- "/home/bcallaghan/Projects/SFARI/plots/"
-dir.cor.plots <- "/home/bcallaghan/Projects/SFARI/plots/corr"
-dir.temp <- "/home/bcallaghan/Projects/SFARI/temp/"
+if(opt.session.local == FALSE){
+  setwd("/home/bcallaghan/Projects/SFARI/")
+  dir.home <- "/home/bcallaghan/Projects/SFARI/"
+  dir.inputs <- "/home/bcallaghan/Projects/SFARI/inputs/"
+  dir.outputs <- "/home/bcallaghan/Projects/SFARI/outputs/"
+  dir.plots <- "/home/bcallaghan/Projects/SFARI/plots/"
+  dir.cor.plots <- "/home/bcallaghan/Projects/SFARI/plots/corr"
+  dir.temp <- "/home/bcallaghan/Projects/SFARI/temp/"
+} else {
+  setwd("/home/bcallaghan/OttoSu/Projects/SFARI")
+  dir.home <- "/home/bcallaghan/OttoSu/Projects/SFARI/"
+  dir.inputs <- "/home/bcallaghan/OttoSu/Projects/SFARI/inputs/"
+  dir.outputs <- "/home/bcallaghan/OttoSu/Projects/SFARI/outputs/"
+  dir.plots <- "/home/bcallaghan/OttoSu/Projects/SFARI/plots/"
+  dir.cor.plots <- "/home/bcallaghan/OttoSu/Projects/SFARI/plots/corr"
+  dir.temp <- "/home/bcallaghan/OttoSu/Projects/SFARI/temp/"
+}
 
 path.fasta <- paste0(dir.inputs,gene.i$name,".fa")
 path.annovar.out <- paste0(dir.temp,gene.i$name,"_anno.hg19_multianno.csv")
@@ -45,7 +64,7 @@ path.pp.out <- paste0(dir.inputs, gene.i$name, "PP.tsv")
 path.marv <- paste0(dir.inputs,"MARV_ASD_muts_hg19_multianno.csv")
 path.anno.in <- paste0(dir.temp,as.character(gene.i$name),"_anno_in")
 path.gene.metrics <- paste0(dir.outputs,"gene_level_info")
-
+path.gene.lit.variants <- paste0(dir.inputs, gene.i$name, ".lit.variants")
 
 # Setup: Tests ------------------------------------------------------------
 

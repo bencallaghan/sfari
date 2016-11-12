@@ -2,7 +2,8 @@
 #Load in all files:
 #MARVdb
 #BioMart Files: Transcripts, BED, Peptide seq, gene sequence
-#Snap2 #
+#Snap2 
+#
 #
 #"
  
@@ -60,7 +61,11 @@ snap2path <- paste0('/misc/pipeline42/ppdatabases/snap2results/UP000005640_9606/
 
 # Snap2 results -----------------------------------------------------------
 
-snap2.res  <- read.table(snap2path)
+if(opt.session.local == TRUE){
+  snap2.res <- read.table(pipe(paste0("ssh -p 22000 bcallaghan@otto.pavlab.chibi.ubc.ca cat ", snap2path)))
+}else {
+  snap2.res  <- read.table(snap2path)
+}
 
 # Annovar  -----------------------------------------------------------
 
@@ -104,10 +109,20 @@ gene.metrics <- read.table(path.gene.metrics, header = F, sep = "\t", fill=TRUE)
 marv.res <- read.csv(path.marv) # Change to marv.res
 marv.res3 <- read.table("inputs/marv.allvariants_27-09-2016.csv",sep="\t", header = T)
 
+# Ranked gene list (from prior runs - check opt.generanks.cache to redo this ranking)
 
+if(opt.generanks.cache == TRUE){
+gene.list <- read.table("outputs/ranked_list",sep = "\t", header = T)           
+}
 # Exac constraints file
 
 exac.constraints <- read.table("inputs/fordist_cleaned_exac_r03_march16_z_pli_rec_null_data.txt", header = T)
+
+# Literature variants (in vcf format)
+
+if(file.exists(path.gene.lit.variants)){
+  lit.variants <- read.table(path.gene.lit.variants,sep = "\t", col.names=c("chr","start","stop","ref","alt","source"),fill=TRUE)
+}
 
 ###### Custom sequence input
 # Uncomment if you need to manually add sequences
