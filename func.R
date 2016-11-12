@@ -448,7 +448,7 @@ mergePredictProtein <- function(genomic_variants,predict_protein){
   cat(sum(genomic_variants$aachange %in% predict_protein$V1)/nrow(genomic_variants) * 100,"% Amino acid Alignment\n")# Predict Protein doesn't score stopgains/losses
   
   colnames(predict_protein) <- c("aachange.pp","PredictProtein","aapos.pp")
-  variants_merged <- merge(genomic_variants, predict_protein, by.x="aachange", by.y="aachange.pp",all.x=FALSE)
+  variants_merged <- merge(genomic_variants, predict_protein, by.x="aachange", by.y="aachange.pp",all.x=TRUE)
   
   variants_merged %>% arrange((Start)) -> variants_merged
   return(variants_merged)
@@ -480,11 +480,6 @@ unfactorizeColumns <- function(df,columns){
     
   }
 }
-
-
-library(dplyr)
-library(ggplot2)
-library(GGally)
 
 
 bioGetTranscript<- function(GENE){
@@ -554,7 +549,7 @@ merge_multianno_and_snap2 <- function(multiannodf, snap2df){
   snap2df$V3 <- gsub("[A-Z]([0-9]+)[A-Z]","\\1",snap2df$V1)
   
   colnames(snap2df) <- c("snap2aachange","snap2","snap2aapos")
-  mergedDF <- merge(multiannodf, snap2df, by.x="aachange", by.y="snap2aachange",all.x=FALSE) 
+  mergedDF <- merge(multiannodf, snap2df, by.x="aachange", by.y="snap2aachange") 
   mergedDF %>% arrange((Start)) -> mergedDF
   
   return(mergedDF)
@@ -670,8 +665,41 @@ rank.genes <- function(marv.vars = marv.res) {
   return(ranked.genes)
 }
 
-rank_genes2 <- function(marvvars){
-  
+rank_genes2 <- function(marv.vars){
+  lof.mutations <- c("frameshift substitution", "frameshift deletion", "frameshift insertion", "stopgain", "stoploss")
+  ms.mutations <- c("nonsynonymous SNV", "nonframeshift substitution", "nonframeshift deletion", "nonframeshift insertion")
+  marv.vars$mut.category <- "other"
+  marv.vars$mut.category[marv.vars$category %in% lof.mutations] <- "lof"
+  marv.vars$mut.category[marv.vars$category %in% ms.mutations] <- "ms"
+  marv.vars %>% filter(denovo == "yes") -> marv.vars
+  ranked.genes <- data.frame(gene = unique(marv.vars$gene))
+  ranked.genes$marv.count <- sapply(ranked.genes$gene, function(x) nrow(marv.vars[which(marv.vars$gene %in% x),]))
+  ranked.genes$marv.lof.count <- sapply(ranked.genes$gene, function(x) nrow(marv.vars[which(marv.vars$gene %in% x),] %>% filter(mut.category == 'lof')))
+  ranked.genes$marv.ms.count <- sapply(ranked.genes$gene, function(x) nrow(marv.vars[which(marv.vars$gene %in% x),] %>% filter(mut.category == 'ms')))
+  ranked.genes <- ranked.genes[order(ranked.genes$marv.count,decreasing=TRUE),]
+  return(ranked.genes)
+}
+
+add_constraint_scores <- function(ranked.genes, exac.constraints){
+  ranked.genes$MSZ <- exac.constraints[match(ranked.genes$gene, exac.constraints$gene, nomatch=NA), c("mis_z")]
+  ranked.genes$pLI <- exac.constraints[match(ranked.genes$gene, exac.constraints$gene, nomatch=NA), c("pLI")]
+  ranked.genes$pRec <- exac.constraints[match(ranked.genes$gene, exac.constraints$gene, nomatch=NA), c("pRec")]
+  ranked.genes$pNull <- exac.constraints[match(ranked.genes$gene, exac.constraints$gene, nomatch=NA), c("pNull")]
+  ranked.genes
+}
+
+actually_rank_genes <- function(ranked.genes){
+  ranked.genes <- ranked.genes[!is.na(ranked.genes$MSZ),]
+  ranked.genes %>% 
+    #   mutate(lof.score = pLI * marv.lof.count) %>% 
+    #   dplyr::filter(MSZ > -10) %>%
+#   filter(!is.na(ranked.genes$MSZ)) %>%
+  mutate(MSZ = replace(MSZ, MSZ <= 0, 0)) %>%
+  mutate(scale.msz = (MSZ-min(MSZ))/(max(MSZ)-min(MSZ))) %>%
+  mutate(lof.ms.aggregate = (marv.ms.count * scale.msz + marv.lof.count * pLI)) %>% 
+  arrange(desc(lof.ms.aggregate)) %>% 
+  select(gene,marv.count, marv.lof.count, marv.ms.count, MSZ, pLI, pRec, pNull, scale.msz, lof.ms.aggregate) -> ranked.list
+  return(ranked.list)
 }
 
 
@@ -772,8 +800,125 @@ filter.non.transcript<- function(BED, vars.filtered){
   
   print(paste("After exon", nrow(BED), ":" ))
   vars.filtered %>% filter(Start > BED$Start[nrow(BED)]) %>% select(aachange, Start, End)-> intronic
-  res2 %>% filter(!Start > BED$Start[nrow(BED)]) -> res2
+  res2 %>% filter(!Start > BED$Stop[nrow(BED)]) -> res2
   print(intronic)
   return(res2)
   
 }
+
+prioritise_variants <- function(variants,lit.vars,marv.vars){
+  cadd.quants <- quantile(variants$CADD.phred, probs = seq(0,1,.1))
+  snap2.quants <- quantile(variants$CADD.phred, probs = seq(0,1,.1))
+  
+  vars.filtered %>% mutate(prioritised = NA) -> pri.vars
+  marv.vars %>% filter(gene == as.character(gene.i$name)) -> marv.vars
+  
+  pri.vars %>% filter(exac03 > 0, CADD.phred < cadd.quants[2], snap2 < snap2.quants[2]) -> negs
+  pri.vars %>% filter(exac03 == 0, CADD.phred > cadd.quants[10], snap2 > snap2.quants[10]) -> pos
+  
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(negs,2,3,4,5,6)] <- "low-predicted-damage"
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(pos,2,3,4,5,6)] <- "high-predicted-damage"
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(lit.vars,1,2,3,4,5)] <- "literature"
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(marv.vars,3,4,5,6,7)] <- "literature:marv"
+  
+  
+  ##TODO: literature control chooser - just take the position and find the min/max combined damage for each literature variant
+  pri.vars %>% filter(prioritised %in% c("literature", "literature:marv")) %>% dplyr::select(aapos) -> lit.aas
+  lit.cons <- select_controls_by_aapos(pri.vars, lit.aas)
+  
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(lit.cons,1,2,3,4,5)] <- "literature.control"
+  
+  
+  ##TODO: domain control chooser
+  
+  
+#   pri.vars <- pri.vars[which(!is.na(pri.vars$prioritised)),]
+  return(pri.vars)
+}
+
+prioritise_variants2 <- function(variants,lit.vars,marv.vars){
+  cadd.quants <- quantile(variants$CADD.phred, probs = seq(0,1,.1))
+  snap2.quants <- quantile(variants$CADD.phred, probs = seq(0,1,.1))
+  
+  vars.filtered %>% mutate(prioritised = NA) -> pri.vars
+  marv.vars %>% filter(gene == as.character(gene.i$name)) -> marv.vars
+  
+  pri.vars %>% filter(exac03 > 0, CADD.phred < cadd.quants[2], snap2 < snap2.quants[2]) -> negs
+  pri.vars %>% filter(exac03 == 0, CADD.phred > cadd.quants[10], snap2 > snap2.quants[10]) -> pos
+  
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(negs,2,3,4,5,6)] <- "low-predicted-damage"
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(pos,2,3,4,5,6)] <- "high-predicted-damage"
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(lit.vars,1,2,3,4,5)] <- "literature"
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(marv.vars,3,4,5,6,7)] <- "literature:marv"
+  
+  
+  ##TODO: literature control chooser - just take the position and find the min/max combined damage for each literature variant
+#   lit.aas$
+  lit.cons <- select_controls_by_aapos(pri.vars, lit.aas)
+  
+  pri.vars$prioritised[coordinate_strings(pri.vars,2,3,4,5,6) %in% coordinate_strings(lit.cons,1,2,3,4,5)] <- "literature.control"
+  
+  
+  ##TODO: domain control chooser
+  
+  
+  #   pri.vars <- pri.vars[which(!is.na(pri.vars$prioritised)),]
+  return(pri.vars)
+}
+
+
+
+select_controls_by_aapos <- function(pri.vars, aapos){
+  df <- data.frame(Chr= numeric(0), Start= numeric(0), End = numeric(0), Ref = character(0), Alt = character(0))
+  for(i in 1:length(lit.aas$aapos)){
+#     print(i)
+    pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == max(CADD.phred)) -> max.damage
+    pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == min(CADD.phred)) -> min.damage
+    controls <- select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
+    df <- rbind(df,controls)       
+  }
+  return(df)
+}
+
+select_controls_by_aapos2 <- function(pri.vars, aapos){
+  df <- data.frame(Chr= numeric(0), Start= numeric(0), End = numeric(0), Ref = character(0), Alt = character(0))
+  for(i in 1:length(aapos)){
+    #     print(i)
+    pri.vars %>% filter(aapos == aapos[i])%>% filter(CADD.phred == max(CADD.phred)) -> max.damage
+    pri.vars %>% filter(aapos == aapos[i]) %>% filter(CADD.phred == min(CADD.phred)) -> min.damage
+    controls <- dplyr::select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
+    df <- rbind(df,controls)       
+  }
+  return(df)
+}
+
+select_controls_by_domain <- function(pri.vars, aapos){
+  df <- data.frame(Chr= numeric(0), Start= numeric(0), End = numeric(0), Ref = character(0), Alt = character(0))
+  for(i in 1:length(lit.aas$aapos)){
+    #     print(i)
+    pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == max(CADD.phred)) -> max.damage
+    pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == min(CADD.phred)) -> min.damage
+    controls <- select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
+    df <- rbind(df,controls)       
+  }
+  return(df)
+}
+# a <- select_controls_by_aapos(prioritised.variants,lit.aas)
+
+
+coordinate_strings <- function(df,chrnum,startnum, stopnum,refnum,altnum){
+  coord.strng <- paste0(df[,chrnum],":",df[,startnum],"-",df[,stopnum],":",df[,refnum],'/' ,df[,altnum])
+  #coordinate_strings(vars.filtered,2,3,4,5,6)
+  return(coord.strng)
+}
+
+search_variants <- function(variants, query.variants, mode = "coordinates"){
+  if(mode == coordinatestrin){
+    
+  }
+}
+
+
+
+
+
