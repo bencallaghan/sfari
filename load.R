@@ -1,11 +1,12 @@
-#"
-#Load in all files:
-#MARVdb
-#BioMart Files: Transcripts, BED, Peptide seq, gene sequence
-#Snap2 
+########################################
+# Load in all files:
+# MARVdb
+# BioMart Files: Transcripts, BED, Peptide seq, gene sequence
+# Annovar output
+# Snap2 
+# Query file (for querying literature variants)
 #
-#
-#"
+########################################
  
 
 # Biomart -----------------------------------------------------------------
@@ -118,11 +119,16 @@ gene.list <- read.table("outputs/ranked_list",sep = "\t", header = T)
 
 exac.constraints <- read.table("inputs/fordist_cleaned_exac_r03_march16_z_pli_rec_null_data.txt", header = T)
 
-# Literature variants (in vcf format)
+#* Literature variants (in vcf format) --- slated to remove ------
 
 if(file.exists(path.gene.lit.variants)){
   lit.variants <- read.table(path.gene.lit.variants,sep = "\t", col.names=c("chr","start","stop","ref","alt","source"),fill=TRUE)
 }
+
+# Query variants
+
+query.variants <- read.table("inputs/SYNGAP_query_variants2.csv", fill=T,header = T, sep = ",") #* Add different path for each gene in main
+
 
 ###### Custom sequence input
 # Uncomment if you need to manually add sequences

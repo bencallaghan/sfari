@@ -7,7 +7,19 @@
 # Setup: Dependencies -----------------------------------------------------
 
 source("https://bioconductor.org/biocLite.R")
-biocLite('biomaRt')
+# biocLite('biomaRt')
+
+install.packages('stringr')
+install.packages('seqinr')
+install.packages('ssh.utils')
+install.packages('biomaRt')
+install.packages('dplyr')
+install.packages('xtable')
+
+# 
+
+
+
 
 library(stringr)
 library(seqinr)
@@ -30,12 +42,12 @@ library(GGally)
 gene.list <- data.frame(name = c("PTEN","TBR1", "GRIN2B", "DYRK1A","SYNGAP1"),
                          transcript = c("NM_000314","NM_006593","NM_000834","NM_001396","NM_006772"),
                          chromosome = c(10,2,12,21,6))
-i <- 5
+i <- 4
 gene.i <- gene.list[i,]
 
 opt.annovar.cache = TRUE # If TRUE, check for cached copy of annovar in temp before rerunning 
 opt.generanks.cache = TRUE # If TRUE, check for existing final gene ranking
-opt.session.local = TRUE # If TRUE, change all dirs accordingly
+opt.session.local = FALSE # If TRUE, change all dirs accordingly
 
 # Setup: Environment ------------------------------------------------------
 

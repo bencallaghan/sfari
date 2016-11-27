@@ -46,6 +46,7 @@ vars.filtered <- filterGenomicVariants(annovar.res,gene.i$name,gene.i$transcript
 vars.filtered$coordinate.string <- coordinate_strings(vars.filtered, 1, 2 , 3, 4, 5)
 cdnargx <- paste0(".*",gene.i$name,":",gene.i$transcript,":exon[0-9]+:c.([A-Z][0-9]+[A-Z]):p.[A-Z][0-9]+[A-Z].*")
 vars.filtered$cdna <- gsub(cdnargx,"\\1",vars.filtered$AAChange.refGene)
+vars.filtered$cdna.pos <- gsub("[A-Z]+([0-9]*)[A-Z]+","\\1",vars.filtered$cdna)
 
 # vars.filtered$CADD.phred <- phredScale2(vars.filtered$cadd)
 snap2.res$V3 <- gsub("[A-Z]([0-9]+)[A-Z]","\\1",snap2.res$V1)
@@ -63,6 +64,11 @@ vars.filtered <- filter.non.transcript(BED, vars.filtered)
 gene.metrics %>% filter(!duplicated(gene.metrics$V1)) %>% filter(V2 > -50) %>% arrange(V1) -> gene.metrics.2
 colnames(gene.metrics.2) <- c('gene.name', 'gs.gene.length', 'gs.num.aas','gs.num.vars', 'gs.total.vars', 'gs.CADD.v.SNAP2', 
                               'gs.CADD.v.SIFT','gs.CADD.v.PolyPhen2','gs.SNAP2.v.SIFT', 'gs.SNAP2.v.PolyPhen2', 'gs.SIFT.v.PolyPhen2')
+
+# Query variant cleaning  -------------------------------------------------
+
+query.variants <- clean_query_variants(query.variants)
+
 # Input Checks ------------------------------------------------------------
 
 

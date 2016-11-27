@@ -5,9 +5,6 @@ test.files <- check_inputs()
 aaDisagreementChecker(vars.filtered,snap2.res) # If aa alignment is low...
 
 
-
-
-
 # Gene Ranking ------------------------------------------------------------
 
 if(opt.generanks.cache == FALSE){
@@ -48,6 +45,25 @@ prioritised.variants <- prioritise_variants(vars.filtered,lit.variants,marv.res3
 ggplot(prioritised.variants,aes(x=aapos,y=CADD.phred,colour = prioritised, size = !is.na(prioritised)) ) + geom_point()
 
 a<- select_controls_by_aapos2(vars.filtered, c(432, 448))
+
+# Literature / biochemical assay variant query ---------------------------
+
+queried <- query_variants(vars.filtered, query.variants)
+queried %>% select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
+
+
+# Calculated control variants --------------------------------------------
+
+vars.filtered %>% 
+  filter(snap2 < 0, CADD.phred < 10, exac03 > 0) %>% 
+  select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03) %>% 
+  mutate(Source = "negative controls") %>% mutate(denovo = NA) -> res.negs
+
+
+# Output Variant of interest file ----------------------------------------
+
+write.table(x=rbind(res.queried,res.negs), file=paste0("outputs/SYNGAP1_variants_",format(Sys.time(), '%m_%d_%H.%M'),".csv"), sep = ",", row.names=FALSE)
+
 
 # SYNGAP1 -----------------------------------------------------------------
 

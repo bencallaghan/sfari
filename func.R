@@ -907,6 +907,8 @@ select_controls_by_domain <- function(pri.vars, aapos){
 
 
 coordinate_strings <- function(df,chrnum,startnum, stopnum,refnum,altnum){
+  #chrnum, startnum etc correspond to the column numbers containing said information
+  # Returns a vector of strings of length nrow(df) 
   coord.strng <- paste0(df[,chrnum],":",df[,startnum],"-",df[,stopnum],":",df[,refnum],'/' ,df[,altnum])
   #coordinate_strings(vars.filtered,2,3,4,5,6)
   return(coord.strng)
@@ -918,7 +920,70 @@ search_variants <- function(variants, query.variants, mode = "coordinates"){
   }
 }
 
+# Query functions --------------------------------
+# Query all gene variants with subset list 
 
+clean_query_variants <- function(query.variants){#*make this a funtion
+  for(i in 1:nrow(query.variants)){
+    print(i)
+    if(query.variants$querytype[i] == "coordinates"){
+    query.variants$coordinate.string[i] <- coordinate_strings(query.variants[i,], 1,2,2,3,4)
+    }else{
+    query.variants$coordinate.string[i] <- NA
+    }
+  }
+  return(query.variants)
+}
 
+query_variants <- function(variants, query){
+  #   res <- data.frame()
+  res <- data.frame(0, matrix(nrow = nrow(query), ncol = ncol(vars.filtered)))
+  colnames(res) <- colnames(vars.filtered)
+  for(i in 1:nrow(res)){ #nrow(res)
+    print(paste0("query", i))
+    if(query$querytype[i] == "coordinates"){
+      print("Query type coords")
+      if(query$coordinate.string[i] %in% variants$coordinate.string){
+        res[i,] <- variants[match(as.character(query$coordinate.string[i]) ,as.character(variants$coordinate.string)),]
+      } else {
+        res$coordinate.string[i] <- query$coordinate.string[i]
+      }
+      res$Source[i] <- as.character(query$Source[i])
+      res$denovo[i] <- as.character(query$denovo[i])
+    }
+    
+    if(query$querytype[i] == "cdna"){
+      print("query type cdna")
+      if(query$cdna[i] %in% variants$cdna){
+        res[i,] <- variants[match(as.character(query$cdna[i]) ,as.character(variants$cdna)),]
+      } else {
+        res$cdna[i] <- as.character(query$cdna[i])
+      }
+      res$Source[i] <- as.character(query$Source[i])
+      res$denovo[i] <- as.character(query$denovo[i])      
+      
+    }
+    if(query$querytype[i] == "protein"){
+      print("query type aachange")
+      if(query$aachange[i] %in% variants$aachange){
+        res[i,] <- variants[match(as.character(query$aachange[i]) ,as.character(variants$aachange)),]
+      } else {
+        res$aachange[i] <- as.character(query$aachange[i])
+      }
+      res$Source[i] <- as.character(query$Source[i])
+      res$denovo[i] <- as.character(query$denovo[i])      
+      
+    }
+    if(query$querytype[i] == "site"){
+      print("site")
+      sitevars <- variants[which(variants$aapos %in% query$aachange[i]),]
+      maxsnap <- sitevars[which(sitevars$snap2 %in% max(sitevars$snap2))[1],]
+      res[i,] <- maxsnap
+      res$Source[i] <- as.character(query$Source[i])
+      res$denovo[i] <- as.character(query$denovo[i])    
+    }
+  }
+  return(res)
+}
 
 
