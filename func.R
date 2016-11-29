@@ -557,26 +557,26 @@ merge_multianno_and_snap2 <- function(multiannodf, snap2df){
 
 
 
-plot_correlation_stuff <- function(mergedDF, mode = "correlation"){
-  corr <- function(mergedDF){
-    outpath <- paste0(dir.outputs, as.character(gene.i$name), "corr.png")
-    p1 <- ggplot(mergedDF,aes(x= CADD.phred, y = snap2)) + geom_point()
+plot_correlation_stuff <- function(variants, mode = "correlation"){
+  corr <- function(variants){
+    outpath <- paste0(dir.outputs, as.character(gene.i$name), "CADD_SNAP2_Correlation.png")
+    p1 <- ggplot(variants,aes(x= CADD.phred, y = snap2)) + geom_point()
     ggsave(outpath,p1)
   }
-  snap2 <- function(mergedDF){
-    outpath <- paste0(dir.outputs, as.character(gene.i$name), "snap2.png")
-    p1 <- ggplot(mergedDF,aes(x= aapos, y = snap2)) + geom_point()
+  snap2 <- function(variants){
+    outpath <- paste0(dir.outputs, as.character(gene.i$name), "SNAP2_Scores_byAAPOS.png")
+    p1 <- ggplot(variants,aes(x= aapos, y = snap2)) + geom_point()
     ggsave(outpath,p1)
   }
-  cadd <- function(mergedDF){
-    outpath <- paste0(dir.outputs, as.character(gene.i$name), "cadd.png")
-    p1 <- ggplot(mergedDF,aes(x= aapos, y = CADD.phred)) + geom_point()
+  cadd <- function(variants){
+    outpath <- paste0(dir.outputs, as.character(gene.i$name), "CADD_SCORES_byAAPOS.png")
+    p1 <- ggplot(variants,aes(x= aapos, y = CADD.phred)) + geom_point()
     ggsave(outpath, p1)
   }
   switch(mode, 
-         correlation = corr(mergedDF),
-         snap2 = snap2(mergedDF),
-         cadd = cadd(mergedDF)
+         correlation = corr(variants),
+         snap2 = snap2(variants),
+         cadd = cadd(variants)
   )
   
 }
@@ -598,9 +598,12 @@ plot_pairs_damage_scores <- function(multianno.df, outfolder, genename){
   #     continuous = wrap('cor', method = "spearman")),lower = list(
   #       continuous = wrap('cor', method = "pearson")))
   
-  png(file.path(outfolder, paste0(genename, ".png")), height=1000, width=1000)
-  print(pairsplot)
-  dev.off()
+  # png(file.path(outfolder, paste0(genename, ".png")), height=1000, width=1000)
+  # print(pairsplot)
+  # dev.off()
+  outpath <- paste0(outfolder, as.character(gene.i$name), "_gene_metrics_pairsplot.png")
+  ggsave(outpath, pairsplot)
+  
   
 }
 # plot_pairs_damage_scores(multianno.2, "/home/bcallaghan/NateDBCopy/20kcorr/pairsplots/", GENE)

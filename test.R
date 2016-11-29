@@ -146,16 +146,17 @@ if(opt.annovar.cache & file.exists(path.annovar.out2)){
 # SYNGAPVARIANTS ----------------------------------------------------------
 
 # query.variants <- read.table("inputs/SYNGAP_query_variants.csv", fill=T,header = T, sep = "\t")
-query.variants <- read.table("inputs/SYNGAP_query_variants2.csv", fill=T,header = T, sep = ",")
-vars.filtered$cdna.pos <- gsub("[A-Z]+([0-9]*)[A-Z]+","\\1",vars.filtered$cdna)
-for(i in 1:nrow(query.variants)){
-  print(i)
-  if(query.variants$querytype[i] == "coordinates"){
-    query.variants$coordinate.string[i] <- coordinate_strings(query.variants[i,], 1,2,2,3,4)
-  }else{
-    query.variants$coordinate.string[i] <- NA
-  }
-}
+# query.variants <- read.table("inputs/SYNGAP_query_variants2.csv", fill=T,header = T, sep = ",")
+# vars.filtered$cdna.pos <- gsub("[A-Z]+([0-9]*)[A-Z]+","\\1",vars.filtered$cdna)
+
+# for(i in 1:nrow(query.variants)){
+#   print(i)
+#   if(query.variants$querytype[i] == "coordinates"){
+#     query.variants$coordinate.string[i] <- coordinate_strings(query.variants[i,], 1,2,2,3,4)
+#   }else{
+#     query.variants$coordinate.string[i] <- NA
+#   }
+# }
 vars.filtered2 <- as.character(vars.filtered)
 
 variants <- vars.filtered #Testing
