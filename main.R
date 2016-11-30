@@ -6,7 +6,10 @@ cat("###Starting Variant Prioritisation###\n") # Progress message
 
 # Setup: Dependencies -----------------------------------------------------
 
-source("http://bioconductor.org/biocLite.R")
+# source("http://bioconductor.org/biocLite.R")
+# library(BiocInstaller)
+# biocLite("S4Vectors")
+# biocLite("Biostrings")
 # biocLite('biomaRt')
 
 # install.packages('stringr')
@@ -16,11 +19,11 @@ source("http://bioconductor.org/biocLite.R")
 # install.packages('dplyr')
 # install.packages('xtable')
 
-# 
 
 
 
 
+library('Biostrings')
 library(stringr)
 library(seqinr)
 library(ssh.utils)
@@ -47,7 +50,10 @@ gene.i <- gene.list[i,]
 
 opt.annovar.cache = TRUE # If TRUE, check for cached copy of annovar in temp before rerunning 
 opt.generanks.cache = TRUE # If TRUE, check for existing final gene ranking
-opt.session.local = FALSE # If TRUE, change all dirs accordingly
+opt.session.local = TRUE # If TRUE, change all directories accordingly
+# If you're running locally (on a desktop or laptop) need to run rstudio with sudo rights
+# and make sure you're running in a folder to which those sudo rights work
+# For me: I run sudo sshfs to mount my Projects folder and run Rstudio on mounted project directory
 
 # Setup: Environment ------------------------------------------------------
 
@@ -55,6 +61,7 @@ if(opt.session.local == FALSE){
   setwd("/home/bcallaghan/Projects/SFARI/")
   dir.home <- "/home/bcallaghan/Projects/SFARI/"
   dir.inputs <- "/home/bcallaghan/Projects/SFARI/inputs/"
+  dir.outputs.parent <- ("/home/bcallaghan/Projects/SFARI/outputs/")
   dir.outputs <- paste0("/home/bcallaghan/Projects/SFARI/outputs/outputs_",format(Sys.time(), '%m_%d_%H.%M'),"/")
   dir.plots <- "/home/bcallaghan/Projects/SFARI/plots/"
   dir.cor.plots <- "/home/bcallaghan/Projects/SFARI/plots/corr"
@@ -63,6 +70,7 @@ if(opt.session.local == FALSE){
   setwd("/home/bcallaghan/OttoSu/Projects/SFARI")
   dir.home <- "/home/bcallaghan/OttoSu/Projects/SFARI/"
   dir.inputs <- "/home/bcallaghan/OttoSu/Projects/SFARI/inputs/"
+  dir.outputs.parent <- ("/home/bcallaghan/OttoSu/Projects/SFARI/outputs/")
   dir.outputs <- paste0("/home/bcallaghan/OttoSu/Projects/SFARI/outputs/outputs_",format(Sys.time(), '%m_%d_%H.%M'),"/")
   dir.plots <- "/home/bcallaghan/OttoSu/Projects/SFARI/plots/"
   dir.cor.plots <- "/home/bcallaghan/OttoSu/Projects/SFARI/plots/corr"
@@ -75,7 +83,7 @@ path.annovar.out2 <- paste0(dir.temp,gene.i$name,"_anno2.hg19_cadd_dropped")
 path.pp.out <- paste0(dir.inputs, gene.i$name, "PP.tsv")
 path.marv <- paste0(dir.inputs,"MARV_ASD_muts_hg19_multianno.csv")
 path.anno.in <- paste0(dir.temp,as.character(gene.i$name),"_anno_in")
-path.gene.metrics <- paste0(dir.outputs,"gene_level_info")
+path.gene.metrics <- paste0(dir.outputs.parent,"gene_level_info")
 path.gene.lit.variants <- paste0(dir.inputs, gene.i$name, ".lit.variants")
 
 dir.create(dir.outputs) # create a new directory (timestamped) for every run

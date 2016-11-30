@@ -8,7 +8,7 @@ aaDisagreementChecker(vars.filtered,snap2.res) # If aa alignment is low
 # Gene Ranking ------------------------------------------------------------
 
 if(opt.generanks.cache == FALSE){
-  ranked.genes <- rank_genes2(marv.res3)
+  ranked.genes <- rank_genes2(marv.res)
   ranked.genes <- add_constraint_scores(ranked.genes, exac.constraints)
   ranked.list <- actually_rank_genes(ranked.genes)
   # head(ranked.list, 50)
@@ -17,8 +17,9 @@ if(opt.generanks.cache == FALSE){
 }
 
 # Metric Correlation ------------------------------------------------------
-corr.cadd.snap2 <- cor(vars.filtered$CADD.phred,vars.filtered$PredictProtein,method="spearman")
-cor(vars.filtered$cadd,vars.filtered$PredictProtein,method="spearman")
+corr.caddp.snap2 <- cor(as.numeric(vars.filtered$CADD.phred),as.numeric(vars.filtered$snap2,method="spearman"), use = "complete.obs")
+cat(corr.caddp.snap2)
+corr.cadd.snap2 <- cor(as.numeric(vars.filtered$cadd),as.numeric(vars.filtered$snap2),method="spearman", use = "complete.obs")
 
 gene.i.scores <- find_gene_scores(vars.filtered, anno.df)
 
@@ -38,17 +39,17 @@ ggplot(sample_n(gene.metrics,1000), aes(x = as.numeric(V1), y = as.numeric(V6), 
 # ggplot(vars.filtered, aes(x = snap2, y = CADD.phred, alpha = .7)) + geom_point()
 
 # Variant Prioritisation --------------------------------------------------
+##### Replaced by query vvvv, slated for removal
+# prioritised.variants <- prioritise_variants(vars.filtered,lit.variants,marv.res)
+# ggplot(prioritised.variants,aes(x=aapos,y=CADD.phred,colour = prioritised, size = !is.na(prioritised)) ) + geom_point()
 
-prioritised.variants <- prioritise_variants(vars.filtered,lit.variants,marv.res3)
-ggplot(prioritised.variants,aes(x=aapos,y=CADD.phred,colour = prioritised, size = !is.na(prioritised)) ) + geom_point()
-
-# a<- select_controls_by_aapos2(vars.filtered, c(432, 448))
 
 # Literature / biochemical assay variant query ---------------------------
 print("Querying for variants of interest:")
 print(query.variants)
 queried <- query_variants(vars.filtered, query.variants)
 queried %>% select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
+res.queried
 
 
 # Calculated control variants --------------------------------------------
@@ -64,12 +65,12 @@ vars.filtered %>%
 vars.filtered %>% 
   filter(snap2 > 0, CADD.phred > 20, exac03 == 0) %>% 
   select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03) %>% 
-  mutate(Source = "negative controls") %>% mutate(denovo = NA) -> res.calculated.positives
+  mutate(Source = "calculated positive controls") %>% mutate(denovo = NA) -> res.calculated.positives
 
 # Outputs ----------------------------------------
 # Output Variant of interest file
 # write.table(x=rbind(res.queried,res.negs), file=paste0("outputs/SYNGAP1_variants_",format(Sys.time(), '%m_%d_%H.%M'),".csv"), sep = ",", row.names=FALSE)
-write.table(x=rbind(res.queried,res.negs), file=paste0(dir.outputs,gene.i$name,"_VariantsOfInterest",".csv"), sep = ",", row.names=FALSE)
+write.table(x=rbind(res.queried,res.population.controls), file=paste0(dir.outputs,gene.i$name,"_VariantsOfInterest",".csv"), sep = ",", row.names=FALSE)
 write.table(x=rbind(res.calculated.positives), file=paste0(dir.outputs,gene.i$name,"_CaculatedHighImpact",".csv"), sep = ",", row.names=FALSE)
 
 # Output Plots ------------------------------------------------------------
@@ -82,6 +83,7 @@ plot_correlation_stuff(vars.filtered,"cadd")
 #Plot histogram of correlations (genome-wide)
 # Saves in dir.outputs path
 ggplot(gene.metrics.2, aes(x = gs.CADD.v.SNAP2)) + geom_histogram()
+ggsave(paste0(dir.outputs, "20k_snap2_vs_CADD_correlations.png"))
 
 # Plot gene metric pairsplot
 # Saves in dir.outputs path

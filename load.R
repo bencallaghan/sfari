@@ -23,6 +23,7 @@ attributes <- c("refseq_mrna","ensembl_transcript_id","transcript_start","transc
 
 # Transcript
 BMtranscript <- getBM(attributes = attributes, filters = c("hgnc_symbol"),values = list(as.character(gene.i$name)), mart = mart, verbose = FALSE)
+# Canonical transcript
 BMtranscript %>% filter(transcript_status == "KNOWN", transcript_biotype == "protein_coding",refseq_mrna !="") %>% arrange(desc(transcript_length)) -> BMtranscript.sort
 
 ensembl_ID <- BMtranscript.sort$ensembl_transcript_id[1]
@@ -54,16 +55,17 @@ BMgenecoords <- getBM(attributes = c("start_position","end_position","genomic_co
 # Snap2 -------------------------------------------------------------------
 
 # Snap2 mapping
-
-predictProteinMap <- read.table(paste0(dir.inputs,"fastamap")) # Maps Gene Symbols to Files
-snapfile <- predictProteinMap[which(predictProteinMap$V2 == as.character(as.character(gene.i$name))),1]
+snap2map <- read.table(paste0(dir.inputs,"fastamap")) # Maps Gene Symbols to snap2 results files
+snapfile <- snap2map[which(snap2map$V2 == as.character(as.character(gene.i$name))),1]
 snap2path <- paste0('/misc/pipeline42/ppdatabases/snap2results/UP000005640_9606/', snapfile, '.snap2.parsed')
 
 
 # Snap2 results -----------------------------------------------------------
+# If snap2 results aren't coming in (and you're running locally), may need to change server (ex from otto to apu)
+# Otherwise, check that pipeline24 is mounted on the rstudio server (and that you can see the snap2 files)
 
 if(opt.session.local == TRUE){
-  snap2.res <- read.table(pipe(paste0("ssh -p 22000 bcallaghan@otto.pavlab.chibi.ubc.ca cat ", snap2path)))
+  snap2.res <- read.table(pipe(paste0("ssh -p 22000 bcallaghan@otto.pavlab.chibi.ubc.ca cat ", snap2path))) 
 }else {
   snap2.res  <- read.table(snap2path)
 }
@@ -97,7 +99,6 @@ annovar.res <- read.csv(path.annovar.out) #change to annovar.res
 annovar.res2 <- read.table(path.annovar.out2, sep="\t")
 
 # Fasta -------------------------------------------------------------------
-
 # fasta <- read.table(path.fasta)
 
 
@@ -107,8 +108,8 @@ gene.metrics <- read.table(path.gene.metrics, header = F, sep = "\t", fill=TRUE)
 
 # MARVdb Variants ---------------------------------------------------------
 
-marv.res <- read.csv(path.marv) # Change to marv.res
-marv.res3 <- read.table("inputs/marv.allvariants_27-09-2016.csv",sep="\t", header = T)
+# marv.res <- read.csv(path.marv) # Change to marv.res
+marv.res <- read.table("inputs/marv.allvariants_27-09-2016.csv",sep="\t", header = T)
 
 # Ranked gene list (from prior runs - check opt.generanks.cache to redo this ranking)
 
@@ -120,10 +121,10 @@ gene.list <- read.table("outputs/ranked_list",sep = "\t", header = T)
 exac.constraints <- read.table("inputs/fordist_cleaned_exac_r03_march16_z_pli_rec_null_data.txt", header = T)
 
 #* Literature variants (in vcf format) --- slated to remove ------
-
-if(file.exists(path.gene.lit.variants)){
-  lit.variants <- read.table(path.gene.lit.variants,sep = "\t", col.names=c("chr","start","stop","ref","alt","source"),fill=TRUE)
-}
+# 
+# if(file.exists(path.gene.lit.variants)){
+#   lit.variants <- read.table(path.gene.lit.variants,sep = "\t", col.names=c("chr","start","stop","ref","alt","source"),fill=TRUE)
+# }
 
 # Query variants
 

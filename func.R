@@ -43,6 +43,18 @@ findPotentialStartsAndStops <- function(sequence)
   return(mylist)
 }
 
+# 
+# findPotentialStartsAndStops <- function(sequence, codons = c("atg", "taa", "tag", "tga")){
+#   # find the starting position of the matches for all the codons
+#   startpositions <- sapply(codons, function(x){start(matchPattern(x, sequence))})
+#   # combine them into a vector and sort by position
+#   output <- sort(do.call(c, startpositions))
+#   # If we really *need* a list
+#   output <- list(as.numeric(output), names(output))
+#   return(output)
+# }
+
+
 # Find ORFS
 findORFsinSeq <- function(sequence)
 {
