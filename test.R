@@ -1,5 +1,22 @@
+ggplot(vars.filtered, aes(x = snap2, y = CADD.phred))+ geom_point(colour = "#F8766D")
+ggsave("plots/pten_cadd_vs_snap2.png", device = "png")
 
-# non ranscripts stuff
+
+# Plotting cadd
+annovar.res %>% select(Func.refGene,Start,CADD.phred) -> ggdf
+# ggdf %>% filter(Func.refGene %in% c(UTR5, exonic, exonic;splicing, UT5, splicing), sample())
+ggdf %>% filter(Func.refGene %in% 'intronic') %>% sample_n(5000) -> introns
+ggdf %>% filter(Func.refGene %in% "UTR3") %>% sample_n(2000) -> utr3
+
+ggdf %>% filter(Func.refGene %in% c('UTR5', 'exonic', 'exonic;splicing', 'splicing')) -> ggdf
+ggdf <- rbind (ggdf, introns, utr3)
+ggdf$pos <- rank(ggdf$Start)
+
+ggplot(data=ggdf,aes(x = pos, y = as.numeric(CADD.phred),colour = Func.refGene, alpha = 0.1)) + geom_point()
+
+
+
+# non transcripts stuff
 BED
 vars.filtered
 
@@ -235,6 +252,177 @@ vars.filtered %>%
 write.table(x=rbind(res.queried,res.negs), file=paste0("outputs/SYNGAP1_variants_",format(Sys.time(), '%m_%d_%H.%M'),".csv"), sep = ",", row.names=FALSE)
 
 # filtered.list <- query_by_coordinates(vars.filtered, query.variants)
+
+### Lolliplot plotting
+
+classes <- read.csv("inputs/Lollipop/cFIG4_variant_effect (1).csv")
+
+classColors <- c(   "EmptyVector"="#333333",
+                    
+                    "Biochemical (LOF)" = "orange", 
+                    "Biochemical (GOF)" = "magenta", 
+                    
+                    "ASD-associated LGD" = "blue", 
+                    "ASD-associated missense" = "red", 
+                    
+                    "ClinVar pathogenic"="green", 
+                    "ClinVar benign"="dark green", 
+                    
+                    "WT"= "#C2C2C2",
+                    
+                    "Population"="purple", 
+                    "Unclassified"="brown"
+)
+
+## This part is useful for ggplot (I just do myPlot + colScale to color it, provided the dataframe has a 
+#Class vector. The spreadsheet I gave you does.)
+
+classColorsOrder <- as.numeric(c())
+for (name in names(classColors)) {
+  print(which( (name == classes$Class) == TRUE ))
+  rows <- which( (name == classes$Class) == TRUE )
+  classColorsOrder <- c( classColorsOrder, rows)
+}
+
+# Useful for barplots
+colScale <-  scale_colour_manual(name="Class", values = classColors)
+
+
+# Colours
+
+showCols <- function(cl=colors(), bg = "grey",
+                     cex = 0.75, rot = 30) {
+  m <- ceiling(sqrt(n <-length(cl)))
+  length(cl) <- m*m; cm <- matrix(cl, m)
+  require("grid")
+  grid.newpage(); vp <- viewport(w = .92, h = .92)
+  grid.rect(gp=gpar(fill=bg))
+  grid.text(cm, x = col(cm)/m, y = rev(row(cm))/m, rot = rot,
+            vp=vp, gp=gpar(cex = cex, col = cm))
+}
+
+showCols(cl= colors(), bg="gray33", rot=30, cex=0.75)
+
+# Counts per category
+
+pten.variants <- read.table("inputs/PTEN Variants.txt", sep = "\t", header = T, row.names = F)
+
+
+# Lollipop plots and sundry:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:=:
+
+
+classColors <- c(   "EmptyVector"="#333333", # Black-ish grey
+                    
+                    "Biochemical (LOF)" = "#ffa500", #Orange
+                    "Biochemical (GOF)" = "#ff00ff", #Magenta
+                    
+                    "ASD-associated LGD" = "#0000ff", #Blue
+                    "ASD-associated missense" = "#ff0000",  #Red
+                    
+                    "ClinVar pathogenic"="#31a354",
+                    "ClinVar benign"="#006400", # Dark green
+                    
+                    "WT"= "#636363", #" White-ish grey",
+                    
+                    "Population"="#A020F0",  # Purple
+                    "Unclassified"="#a52a2a" # Brown
+)
+yeast.res <- read.table("inputs/pointplotData.csv", header = T, col.names = c("xx","Variant","Gene.Name","Mean.normalized","SD.normalized","Class","SNAP2","CADD","Coordinates","AAOrder"), sep = ",")
+head(yeast.res)
+# qplot(yeast.res$CADD, yeast.res$Mean.normalized)
+
+
+classColorsOrder <- as.numeric(c())
+for (name in names(classColors)) {
+  print(which( (name == yeast.res$Class) == TRUE ))
+  rows <- which( (name == yeast.res$Class) == TRUE )
+  classColorsOrder <- c( classColorsOrder, rows)
+}
+colScale <-  scale_colour_manual(name="Class", values = classColors)
+
+
+
+yeast.res %>% filter(Gene.Name == "VAC14") -> yeast.res
+yeast.res$colorhex <- unname(classColors[levels(yeast.res$Class)[yeast.res$Class]]) #Assign colors based on class
+yeast.res$size <- floor((scale(yeast.res$Mean.normalized) - min(scale(yeast.res$Mean.normalized))) * 25)
+attributes(yeast.res$size) <- NULL
+yeast.res %>% filter(Class %in% c("ASD-associated missense" ,"Population", "ClinVar benign", "ClinVar pathogenic")) -> yeast.res
+
+yeast.res$varstring <- paste0("p.",yeast.res$Variant,yeast.res$colorhex,"@", yeast.res$size)
+yeast.res$aapos <- gsub("[A-Z]","",x = levels(yeast.res$Variant)[yeast.res$Variant], perl = T)
+yeast.res$aapos <- gsub("[a-z]","",x = yeast.res$aapos, perl = T)
+
+# Lollipops:
+# substr(levels(yeast.res$Variant)[yeast.res$Variant])
+cat(yeast.res$varstring) # for lollipop program
+hist(yeast.res$size)
+
+
+# For pymol:
+
+## Scale your values to range between 0 and 1
+rr <- range(yeast.res$Mean.normalized)
+svals <- (yeast.res$Mean.normalized-rr[1])/diff(rr)
+# [1] 0.2752527 0.0000000 0.9149839 0.3680242 1.0000000 0.2660587
+
+## Play around with ends of the color range
+f <- colorRamp(c("red", "blue"))
+colors <- rgb(f(svals)/255)
+colors # Colors is the vector from which you can 
+
+cat(paste0("select ((resi ",yeast.res$aapos, ") and (chain A) and (not name c+n+o));\n color ", colors, ", sele;\n"))
+
+
+# Yeast effects vs aapos plot:
+
+lowess.line <- lowess(yeast.res$AAOrder, yeast.res$Mean.normalized, f=1/4,delta = 1/100)
+lowess.line <- data.frame(x = lowess.line$x, y = lowess.line$y)
+
+# ggplot(yeast.res, aes(x=as.numeric(aapos), y = (Mean.normalized), color = Class)) +
+#   geom_point() +
+#   scale_colour_manual(values=c("#ff0000", "#0000ff", "#006400", "#31a354")) +
+#   geom_line(data=lowess.line, aes(x = x, y = y))
+
+
+myplot = ggplot()+
+  geom_point(data = yeast.res,aes(x=as.numeric(aapos), y = (Mean.normalized), color = Class, size = 2)) +
+  scale_colour_manual(values=c("#ff0000", "#31a354", "#31a354","#A020F0")) +
+  geom_line(data=lowess.line, aes(x = x, y = y),color = "Black",size = 2 ) 
+myplot +  theme(panel.background = element_blank()) + colScale
+
+# ggsave(filename = "yeast_aapos_ls.pdf")
+ggsave(filename = "yeast_aapos_vac14.pdf")
+
+
+lines(lowess(allmissense$AAOrder, allmissense$Mean.normalized, f=1/4), col="blue", lwd=3)
+#smoother span  = 1/4 (the proportion of points in the plot which influence smooth at each value)
+#iter = 3 # number of robustifying iterations which should be performed
+# delta is 1/100 * range of x
+
+
+
+
+
+
+# Plot of yeast results vs aapos
+
+
+classColorsOrder <- as.numeric(c())
+for (name in names(classColors)) {
+  print(which( (name == classes$Class) == TRUE ))
+  rows <- which( (name == classes$Class) == TRUE )
+  classColorsOrder <- c( classColorsOrder, rows)
+}
+
+# Useful for barplots
+colScale <-  scale_colour_manual(name="Class", values = classColors)
+scale_colour_manual(values=c("#CC6666", "#9999CC", "#66CC99"))
+
+
+
+
+
+
 
 
 

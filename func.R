@@ -680,13 +680,18 @@ rank.genes <- function(marv.vars = marv.res) {
   return(ranked.genes)
 }
 
-rank_genes2 <- function(marv.vars){
+count_marv_variants <- function(marv.vars, method = "denovo"){
   lof.mutations <- c("frameshift substitution", "frameshift deletion", "frameshift insertion", "stopgain", "stoploss")
   ms.mutations <- c("nonsynonymous SNV", "nonframeshift substitution", "nonframeshift deletion", "nonframeshift insertion")
   marv.vars$mut.category <- "other"
   marv.vars$mut.category[marv.vars$category %in% lof.mutations] <- "lof"
   marv.vars$mut.category[marv.vars$category %in% ms.mutations] <- "ms"
-  marv.vars %>% filter(denovo == "yes") -> marv.vars
+  if(method == "denovo"){
+    marv.vars %>% filter(denovo == "yes") -> marv.vars
+  }
+  if(method == "total"){
+    marv.vars %>% filter(denovo == "yes" | denovo == "unknown" | denovo == "NULL") -> marv.vars
+  }
   ranked.genes <- data.frame(gene = unique(marv.vars$gene))
   ranked.genes$marv.count <- sapply(ranked.genes$gene, function(x) nrow(marv.vars[which(marv.vars$gene %in% x),]))
   ranked.genes$marv.lof.count <- sapply(ranked.genes$gene, function(x) nrow(marv.vars[which(marv.vars$gene %in% x),] %>% filter(mut.category == 'lof')))
@@ -703,18 +708,22 @@ add_constraint_scores <- function(ranked.genes, exac.constraints){
   ranked.genes
 }
 
+range01 <- function(x,...){(x-min(x,...))/(max(x,...)-min(x,...))}
+
+
 actually_rank_genes <- function(ranked.genes){
-  ranked.genes <- ranked.genes[!is.na(ranked.genes$MSZ),]
+  # ranked.genes <- ranked.genes[!is.na(ranked.genes$MSZ),]
+  ranked.genes$MSZ[is.na(ranked.genes$MSZ)] <- 0
+  ranked.genes$pLI[is.na(ranked.genes$pLI)] <- 0
+  
   ranked.genes %>% 
-    #   mutate(lof.score = pLI * marv.lof.count) %>% 
-    #   dplyr::filter(MSZ > -10) %>%
-#   filter(!is.na(ranked.genes$MSZ)) %>%
   mutate(MSZ = replace(MSZ, MSZ <= 0, 0)) %>%
   mutate(scale.msz = (MSZ-min(MSZ))/(max(MSZ)-min(MSZ))) %>%
-  mutate(lof.ms.aggregate = (marv.ms.count * scale.msz + marv.lof.count * pLI)) %>% 
+  mutate(lof.ms.aggregate = range01(marv.ms.count * scale.msz + marv.lof.count * pLI, na.rm = T) * 100 ) %>% 
   arrange(desc(lof.ms.aggregate)) %>% 
   select(gene,marv.count, marv.lof.count, marv.ms.count, MSZ, pLI, pRec, pNull, scale.msz, lof.ms.aggregate) -> ranked.list
   return(ranked.list)
+  
 }
 
 
@@ -957,9 +966,9 @@ query_variants <- function(variants, query){
   for(i in 1:nrow(res)){ #nrow(res)
     print(paste0("query", i))
     if(query$querytype[i] == "coordinates"){
-      print("Query type coords")
+      print("Query type: coordinates")
       if(query$coordinate.string[i] %in% variants$coordinate.string){
-        res[i,] <- variants[match(as.character(query$coordinate.string[i]) ,as.character(variants$coordinate.string)),]
+        res[i,] <- lapply(variants[match(as.character(query$coordinate.string[i]) ,as.character(variants$coordinate.string)),], as.character)
       } else {
         res$coordinate.string[i] <- query$coordinate.string[i]
       }
@@ -968,9 +977,9 @@ query_variants <- function(variants, query){
     }
     
     if(query$querytype[i] == "cdna"){
-      print("query type cdna")
+      print("Query type: cdna")
       if(query$cdna[i] %in% variants$cdna){
-        res[i,] <- variants[match(as.character(query$cdna[i]) ,as.character(variants$cdna)),]
+        res[i,] <- lapply(variants[match(as.character(query$cdna[i]) ,as.character(variants$cdna)),],as.character)
       } else {
         res$cdna[i] <- as.character(query$cdna[i])
       }
@@ -979,9 +988,9 @@ query_variants <- function(variants, query){
       
     }
     if(query$querytype[i] == "protein"){
-      print("query type aachange")
+      print("Query type: aachange")
       if(query$aachange[i] %in% variants$aachange){
-        res[i,] <- variants[match(as.character(query$aachange[i]) ,as.character(variants$aachange)),]
+        res[i,] <- lapply(variants[match(as.character(query$aachange[i]) ,as.character(variants$aachange)),], as.character)
       } else {
         res$aachange[i] <- as.character(query$aachange[i])
       }
@@ -1001,4 +1010,7 @@ query_variants <- function(variants, query){
   return(res)
 }
 
+logfile_writeline <- function(line){
+  cat(paste0(line,'\n'), file = log_con)
+}
 

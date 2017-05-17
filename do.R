@@ -8,12 +8,23 @@ aaDisagreementChecker(vars.filtered,snap2.res) # If aa alignment is low
 # Gene Ranking ------------------------------------------------------------
 
 if(opt.generanks.cache == FALSE){
-  ranked.genes <- rank_genes2(marv.res)
+  ranked.genes <- count_marv_variants(marv.res, method = "total")
+  # ranked.genes <- count_marv_variants(marv.res, method = "denovo")
   ranked.genes <- add_constraint_scores(ranked.genes, exac.constraints)
   ranked.list <- actually_rank_genes(ranked.genes)
-  # head(ranked.list, 50)
-  write.table(ranked.list,"outputs/ranked_list",sep = "\t", row.names = F)
-  write.table(paste0(dir.outputs, "ranked_list"))
+  ranked.list$brain.expressed <- ranked.list$gene %in% brain.expressed.gene.list$V1
+  head(ranked.list, 50)
+  write.table(ranked.list,"outputs/ranked_list.csv",sep = ",", row.names = F) # write the most up to date in outputs dir
+  # write.table(ranked.list, paste0(dir.outputs, "ranked_list.csv"), sep = ",", row.names = F) # Also write in current gene output dir
+  
+  ranked.genes <- count_marv_variants(marv.res, method = "denovo")
+  ranked.genes <- add_constraint_scores(ranked.genes, exac.constraints)
+  ranked.list <- actually_rank_genes(ranked.genes)
+  ranked.list$brain.expressed <- ranked.list$gene %in% brain.expressed.gene.list$V1
+  head(ranked.list, 50)
+  write.table(ranked.list,"outputs/ranked_list_denovo.csv",sep = ",", row.names = F) # write the most uptodate in outputs dir
+  
+  
 }
 
 # Metric Correlation ------------------------------------------------------
@@ -47,24 +58,25 @@ ggplot(sample_n(gene.metrics,1000), aes(x = as.numeric(V1), y = as.numeric(V6), 
 # Literature / biochemical assay variant query ---------------------------
 print("Querying for variants of interest:")
 print(query.variants)
+variants <- vars.filtered; query <- query.variants
 queried <- query_variants(vars.filtered, query.variants)
-queried %>% select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
+queried %>% select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
 res.queried
 
 
 # Calculated control variants --------------------------------------------
-cadd.quants <- quantile(vars.filtered$CADD.phred, probs = seq(0,1,.1))
-snap2.quants <- quantile(vars.filtered$snap2, probs = seq(0,1,.1))
+cadd.quants <- quantile(vars.filtered$CADD.phred, probs = seq(0,1,.1), na.rm = T)
+snap2.quants <- quantile(vars.filtered$snap2, probs = seq(0,1,.1), na.rm = T)
 
 vars.filtered %>% 
-  filter(snap2 < 0, CADD.phred < 10, exac03 > 0) %>% 
-  select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03) %>% 
+  filter(snap2 < 0, CADD.phred < 15, exac03 > 0) %>% 
+  select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03) %>% 
   mutate(Source = "negative controls") %>% mutate(denovo = NA) -> res.population.controls
 
 
 vars.filtered %>% 
   filter(snap2 > 0, CADD.phred > 20, exac03 == 0) %>% 
-  select(aachange, cdna, coordinate.string, Func.refGene, CADD.phred, snap2, exac03) %>% 
+  select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03) %>% 
   mutate(Source = "calculated positive controls") %>% mutate(denovo = NA) -> res.calculated.positives
 
 # Outputs ----------------------------------------

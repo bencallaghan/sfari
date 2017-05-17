@@ -28,7 +28,8 @@ BMtranscript %>% filter(transcript_status == "KNOWN", transcript_biotype == "pro
 
 ensembl_ID <- BMtranscript.sort$ensembl_transcript_id[1]
 refseq_ID <- BMtranscript.sort$refseq_mrna[1]
-
+# ensembl_ID <- BMtranscript.sort$ensembl_transcript_id[3]
+# refseq_ID <- BMtranscript.sort$refseq_mrna[3]
 # BED
 BMbed <- getBM(attributes = c("chromosome_name","exon_chrom_start","exon_chrom_end" ,"rank","strand","ensembl_transcript_id"), 
                filters = c("chromosome_name","hgnc_symbol","ensembl_transcript_id"),
@@ -64,11 +65,11 @@ snap2path <- paste0('/misc/pipeline42/ppdatabases/snap2results/UP000005640_9606/
 # If snap2 results aren't coming in (and you're running locally), may need to change server (ex from otto to apu)
 # Otherwise, check that pipeline24 is mounted on the rstudio server (and that you can see the snap2 files)
 
-if(opt.session.local == TRUE){
+# if(opt.session.local == TRUE){ #At least as long as it's on the rtest... this might work better
   snap2.res <- read.table(pipe(paste0("ssh -p 22000 bcallaghan@otto.pavlab.chibi.ubc.ca cat ", snap2path))) 
-}else {
-  snap2.res  <- read.table(snap2path)
-}
+# }else {
+  # snap2.res  <- read.table(snap2path)
+# }
 
 # Annovar  -----------------------------------------------------------
 
@@ -109,9 +110,12 @@ gene.metrics <- read.table(path.gene.metrics, header = F, sep = "\t", fill=TRUE)
 # MARVdb Variants ---------------------------------------------------------
 
 # marv.res <- read.csv(path.marv) # Change to marv.res
-marv.res <- read.table("inputs/marv.allvariants_27-09-2016.csv",sep="\t", header = T)
+# marv.res <- read.table("inputs/marv.allvariants_27-09-2016.csv",sep="\t", header = T)
+marv.res <- read.table("inputs/marvdbdump-03-07-17.csv", header = T, fill = T, sep = "\t") 
+marv.res <- read.table("inputs/marvdbdump-04-04-17.csv", header = T, fill = T, sep = "\t", comment.char = "" ) 
 
-# Ranked gene list (from prior runs - check opt.generanks.cache to redo this ranking)
+
+# Pull in ranked gene list (from prior runs - check opt.generanks.cache to redo this ranking)
 
 if(opt.generanks.cache == TRUE){
 gene.list <- read.table("outputs/ranked_list",sep = "\t", header = T)           
@@ -119,6 +123,12 @@ gene.list <- read.table("outputs/ranked_list",sep = "\t", header = T)
 # Exac constraints file
 
 exac.constraints <- read.table("inputs/fordist_cleaned_exac_r03_march16_z_pli_rec_null_data.txt", header = T)
+
+
+# Brain expressed gene list from Marjan
+# Should do my own sometime with GTEx data
+brain.expressed.gene.list <- read.table("inputs/marjan_brain_expressed_gene_list.txt")
+
 
 #* Literature variants (in vcf format) --- slated to remove ------
 # 
@@ -128,8 +138,9 @@ exac.constraints <- read.table("inputs/fordist_cleaned_exac_r03_march16_z_pli_re
 
 # Query variants
 
-query.variants <- read.table("inputs/SYNGAP_query_variants2.csv", fill=T,header = T, sep = ",") #* Add different path for each gene in main
-
+# query.variants <- read.table("inputs/DYRK1A_query_variants.csv", fill=T,header = T, sep = ",") #* Add different path for each gene in main
+query.variants <- read.table(path.query.variants, fill=T,header = T, sep = "," ) #* Add different path for each gene in main
+query.variants <- read.table("inputs/DYRK1A_query_variants_0413.csv", fill=T,header = T, sep = "," ) 
 
 ###### Custom sequence input
 # Uncomment if you need to manually add sequences
