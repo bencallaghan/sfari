@@ -46,7 +46,7 @@ if "cdna":
 report variant in cdna column as form 
 | chr | pos | ref | alt | cdna | aachange | Source | X | querytype | denovo |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|21|NA|A860T|||||||||
+|21|NA|A860T| | | | | | | |
 
 
 3. Save file with name GENENAME_query_variants.csv
