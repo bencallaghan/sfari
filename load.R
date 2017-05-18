@@ -66,9 +66,9 @@ snap2path <- paste0('/misc/pipeline42/ppdatabases/snap2results/UP000005640_9606/
 # Otherwise, check that pipeline24 is mounted on the rstudio server (and that you can see the snap2 files)
 
 # if(opt.session.local == TRUE){ #At least as long as it's on the rtest... this might work better
-  snap2.res <- read.table(pipe(paste0("ssh -p 22000 bcallaghan@otto.pavlab.chibi.ubc.ca cat ", snap2path))) 
+#  snap2.res <- read.table(pipe(paste0("ssh -p 22000 echu113@otto.pavlab.chibi.ubc.ca cat ", snap2path))) 
 # }else {
-  # snap2.res  <- read.table(snap2path)
+snap2.res  <- read.table(snap2path)
 # }
 
 # Annovar  -----------------------------------------------------------
@@ -141,7 +141,7 @@ brain.expressed.gene.list <- read.table("inputs/marjan_brain_expressed_gene_list
 
 # query.variants <- read.table("inputs/DYRK1A_query_variants.csv", fill=T,header = T, sep = ",") #* Add different path for each gene in main
 query.variants <- read.table(path.query.variants, fill=T,header = T, sep = "," ) #* Add different path for each gene in main
-query.variants <- read.table("inputs/DYRK1A_query_variants_0413.csv", fill=T,header = T, sep = "," ) 
+# query.variants <- read.table("inputs/DYRK1A_query_variants_0413.csv", fill=T,header = T, sep = "," ) 
 
 ###### Custom sequence input
 # Uncomment if you need to manually add sequences

@@ -721,7 +721,7 @@ actually_rank_genes <- function(ranked.genes){
   mutate(scale.msz = (MSZ-min(MSZ))/(max(MSZ)-min(MSZ))) %>%
   mutate(lof.ms.aggregate = range01(marv.ms.count * scale.msz + marv.lof.count * pLI, na.rm = T) * 100 ) %>% 
   arrange(desc(lof.ms.aggregate)) %>% 
-  select(gene,marv.count, marv.lof.count, marv.ms.count, MSZ, pLI, pRec, pNull, scale.msz, lof.ms.aggregate) -> ranked.list
+  dplyr::select(gene,marv.count, marv.lof.count, marv.ms.count, MSZ, pLI, pRec, pNull, scale.msz, lof.ms.aggregate) -> ranked.list
   return(ranked.list)
   
 }
@@ -811,19 +811,19 @@ messy_genes <- function(df, percentile){
 filter.non.transcript<- function(BED, vars.filtered){
   print("Filtering non-transcript changes")
   print(paste("Before exon 1:"))
-  vars.filtered %>% filter(Start < BED$Start[1]) %>% select(aachange, Start, End)-> intronic
+  vars.filtered %>% filter(Start < BED$Start[1]) %>% dplyr::select(aachange, Start, End)-> intronic
   vars.filtered %>% filter(!Start < BED$Start[1]) -> res2
   print(intronic)
   
   for(i in (seq(1,nrow(BED)-1))){
     print(paste0("Between exon ", i , " and exon " ,i +1,":"))
-    vars.filtered %>% filter(Start %in% seq(BED$Stop[i] + 1,BED$Start[i+1] -1)) %>% select(aachange, Start, End)-> intronic
+    vars.filtered %>% filter(Start %in% seq(BED$Stop[i] + 1,BED$Start[i+1] -1)) %>% dplyr::select(aachange, Start, End)-> intronic
     res2 %>% filter(!Start %in% seq(BED$Stop[i] + 1,BED$Start[i+1] -1)) -> res2
     print(intronic)
   }
   
   print(paste("After exon", nrow(BED), ":" ))
-  vars.filtered %>% filter(Start > BED$Start[nrow(BED)]) %>% select(aachange, Start, End)-> intronic
+  vars.filtered %>% filter(Start > BED$Start[nrow(BED)]) %>% dplyr::select(aachange, Start, End)-> intronic
   res2 %>% filter(!Start > BED$Stop[nrow(BED)]) -> res2
   print(intronic)
   return(res2)
@@ -898,7 +898,7 @@ select_controls_by_aapos <- function(pri.vars, aapos){
 #     print(i)
     pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == max(CADD.phred)) -> max.damage
     pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == min(CADD.phred)) -> min.damage
-    controls <- select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
+    controls <- dplyr::select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
     df <- rbind(df,controls)       
   }
   return(df)
@@ -922,7 +922,7 @@ select_controls_by_domain <- function(pri.vars, aapos){
     #     print(i)
     pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == max(CADD.phred)) -> max.damage
     pri.vars %>% filter(aapos == lit.aas$aapos[i]) %>% filter(!prioritised %in% c('literature', 'literature:marv')) %>% filter(CADD.phred == min(CADD.phred)) -> min.damage
-    controls <- select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
+    controls <- dplyr::select(rbind(max.damage,min.damage),c(Chr, Start, End, Ref, Alt))
     df <- rbind(df,controls)       
   }
   return(df)

@@ -47,22 +47,20 @@ source("config.R")
 # Need to change directories to match your own directory structure
 if(opt.session.local == FALSE){
   #setwd("/home/bcallaghan/Projects/SFARI/")
-  dir.home <- "/home/bcallaghan/Projects/SFARI/"
-  dir.inputs <- "/home/bcallaghan/Projects/SFARI/inputs/"
-  dir.outputs.parent <- ("/home/bcallaghan/Projects/SFARI/outputs/")
-  dir.outputs <- paste0("/home/bcallaghan/Projects/SFARI/outputs/",gene.i$name,"_",format(Sys.time(), '%m_%d_%H.%M'),"/")
-  dir.plots <- "/home/bcallaghan/Projects/SFARI/plots/"
-  dir.cor.plots <- "/home/bcallaghan/Projects/SFARI/plots/corr"
-  dir.temp <- "/home/bcallaghan/Projects/SFARI/temp/"
+  dir.inputs <- paste0(dir.home, "inputs/")
+  dir.outputs.parent <- paste0(dir.home, "outputs/")
+  dir.outputs <- paste0(paste0(dir.home, "outputs/"), gene.i$name,"_",format(Sys.time(), '%m_%d_%H.%M'),"/")
+  dir.plots <- paste0(dir.home, "plots/")
+  dir.cor.plots <- paste0(dir.home, "plots/corr")
+  dir.temp <- paste0(dir.home, "temp/")
 } else{
   #setwd("/home/bcallaghan/OttoSu/Projects/SFARI")
-  dir.home <- "/home/bcallaghan/OttoSu/Projects/SFARI/"
-  dir.inputs <- "/home/bcallaghan/OttoSu/Projects/SFARI/inputs/"
-  dir.outputs.parent <- ("/home/bcallaghan/OttoSu/Projects/SFARI/outputs/")
-  dir.outputs <- paste0("/home/bcallaghan/Projects/SFARI/outputs/",gene.i$name,"_",format(Sys.time(), '%m_%d_%H.%M'),"/")
-  dir.plots <- "/home/bcallaghan/OttoSu/Projects/SFARI/plots/"
-  dir.cor.plots <- "/home/bcallaghan/OttoSu/Projects/SFARI/plots/corr"
-  dir.temp <- "/home/bcallaghan/OttoSu/Projects/SFARI/temp/"
+  dir.inputs <- "/home/echu113/ws/sfari/inputs/"
+  dir.outputs.parent <- ("/home/echu113/ws/sfari/outputs/")
+  dir.outputs <- paste0("/home/echu113/ws/sfari/outputs/",gene.i$name,"_",format(Sys.time(), '%m_%d_%H.%M'),"/")
+  dir.plots <- "/home/echu113/ws/sfari/plots/"
+  dir.cor.plots <- "/home/echu113/ws/sfari/plots/corr"
+  dir.temp <- "/home/echu113/ws/sfari/temp/"
 }
 
 path.fasta <- paste0(dir.inputs,gene.i$name,".fa")

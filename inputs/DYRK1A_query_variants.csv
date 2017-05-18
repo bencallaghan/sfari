@@ -1,97 +1,11 @@
-chr,pos,ref,alt,cdna,aachange,Source,,querytype,denovo
-21,,,,A860T,,Autdb:Deciphering Developmental Disorders Study,,cdna,TRUE
-21,,,,T620C,,Autdb:Deciphering Developmental Disorders Study,,cdna,TRUE
-21,,,,C932T,,Autdb:Raud,,cdna,TRUE
-21,,,,C1763A,,Autdb:Bronicki,,cdna,TRUE
-21,,,,T734G,,Autdb:Ji,,cdna,TRUE
-21,,,,C883T,,Autdb:Ji,,cdna,TRUE
-21,,,,G859T,,Autdb:Zhang,,cdna,TRUE
-21,38853069,G,T,,,Marvdb:  Wang,,coordinates,TRUE
-21,38865398,T,C,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38877659,G,A,,,Marvdb:  Wang,,coordinates,TRUE
-21,38853100,C,G,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38868526,C,G,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38868526,C,G,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38878405,G,T,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38878594,A,T,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38845108,C,G,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38865398,T,C,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38878450,C,T,,,Marvdb:  Wang,,coordinates,UNKNOWN
-21,38858865,C,T,,,Marvdb:  Vanbon,,coordinates,TRUE
-21,38852979,C,T,,,Marvdb:  Vanbon,,coordinates,TRUE
-21,38862611,C,T,,,Marvdb:  Vanbon,,coordinates,UNKNOWN
-21,38877655,C,T,,,Marvdb:  DeRubeis,,coordinates,TRUE
-,,,,L734T,,Ji: Mental Retardation AD 7,https://www.ncbi.nlm.nih.gov/pubmed/25944381,cdna,TRUE
-,,,,G1400A,,Yang: Mental Retardation,,cdna,TRUE
-,,,,G2035C,,Clinvar: Benign,,cdna,
-21,,,,T1036C,,Autdb:Bronicki,Mental retardation,cdna,TRUE
-21,,,,A563T,,Autdb:Ji,,cdna,TRUE
-,,,,,K188R,Biochem:Himpel,,protein,NA
-,,,,,Y319F,Biochem:Himpel,,protein,NA
-,,,,,Y321F,Biochem:Himpel,,protein,NA
-,,,,,Q323A,Biochem:Wiechmann,,protein,NA
-,,,,,Q323E,Biochem:Wiechmann,,protein,NA
-,,,,,Q323N,Biochem:Wiechmann,,protein,NA
-,,,,,D287N,Biochem:Walte,,protein,NA
-,,,,,Y145F,Biochem:Walte,,protein,NA
-,,,,C355T,,Wu 2017,,cdna,UNKNOWN
-,,,,G376T,,Wu 2017,,cdna,UNKNOWN
-,,,,G398A,,Wu 2017,,cdna,UNKNOWN
-,,,,G583A,,Wu 2017,,cdna,UNKNOWN
-,,,,C613T,,Wu 2017,,cdna,UNKNOWN
-,,,,G715T,,Wu 2017,,cdna,UNKNOWN
-,,,,G775T,,Wu 2017,,cdna,UNKNOWN
-,,,,G1373T,,Wu 2017,,cdna,UNKNOWN
-,,,,G1457GA,,Wu 2017,,cdna,UNKNOWN
-21,38845005,CA,C,,,DECIPHER,,coordinates,De novo constitutive
-21,38850511,G,GG,,,DECIPHER,,coordinates,De novo constitutive
-21,38850535,ACCC,ACC,,,DECIPHER,,coordinates,De novo constitutive
-21,38850572,CT,C,,,DECIPHER,,coordinates,De novo constitutive
-21,38850576,AT,A,,,DECIPHER,,coordinates,De novo constitutive
-21,38852957,GA,G,,,DECIPHER,,coordinates,De novo constitutive
-21,38852961,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38853004,AGG,AGGGG,,,DECIPHER,,coordinates,De novo constitutive
-21,38858853,CAGAT,,,,DECIPHER,,coordinates,De novo constitutive
-21,38858872,T,C,,,DECIPHER,,coordinates,De novo constitutive
-21,38858909,C,G,,,DECIPHER,,coordinates,De novo constitutive
-21,38862476,G,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862503,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862503,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862575,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862575,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862599,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862599,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862641,G,C,,,DECIPHER,,coordinates,De novo constitutive
-21,38862672,A,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38862725,A,AT,,,DECIPHER,,coordinates,De novo constitutive
-21,38865317,A,G,,,DECIPHER,,coordinates,De novo constitutive
-21,38865403,T,C,,,DECIPHER,,coordinates,De novo constitutive
-21,38868535,T,TA,,,DECIPHER,,coordinates,De novo constitutive
-21,38877655,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38877655,C,T,,,DECIPHER,,coordinates,De novo constitutive
-21,38877746,G,A,,,DECIPHER,,coordinates,De novo constitutive
-21,38878524,C,T,,,DECIPHER,,coordinates,Unknown
-21,38862585,C,T,,,Stessman,,coordinates,FALSE
-21,38877671,C,G,,,Stessman,,coordinates,FALSE
-21,38877588,G,TATAC,,,Stessman,,coordinates,FALSE
-21,38852979,C,T,,,Stessman,,coordinates,FALSE
-21,38862763,GTAAG,G,,,Stessman,,coordinates,UNKNOWN
-21,38852961,C,T,,,Stessman,,coordinates,FALSE
-21,38865349,C,T,,,Stessman,,coordinates,UNKNOWN
-21,38878461,C,T,,,Stessman,,coordinates,FALSE
-21,38845116,ATA,A,,,Stessman,,coordinates,TRUE
-21,38877833,CC,C,,,Stessman,,coordinates,TRUE
-21,38865466,G,A,,,Stessman,,coordinates,TRUE
-21,38853069,G,T,,,Stessman,,coordinates,TRUE
-21,38877659,G,A,,,Stessman,,coordinates,UNKNOWN
-21,38868553,G ,GG,,,Larsen,,coordinates,TRUE
-21,38877779,T,,,,Larsen,,coordinates,UNKNOWN
-21,38877837,C,,,,Larsen,,coordinates,TRUE
-21,38853064,A,AA,,,Larsen,,coordinates,UNKNOWN
-21,38853073,A,,,,Larsen,,coordinates,TRUE
-21,38862656,A,AA,,,Larsen,,coordinates,TRUE
-21,38862757,G,GG,,,Larsen,,coordinates,TRUE
-21,38853112,A,G,,,Larsen,,coordinates,UNKNOWN
-21,38877887,G,A,,,Larsen,,coordinates,UNKNOWN
-21,38862599,C,T,,,Larsen,,coordinates,TRUE
-21,38877655,C,T,,,Larsen,,coordinates,TRUE
+chr,pos,ref,alt,cdna,aachange,Source,querytype,denovo
+21,38865466,G,A,,,UW List,coordinates,TRUE
+21,38845116,CAT,C,,,UW List,coordinates,TRUE
+21,38877833,GC,G,,,UW List,coordinates,TRUE
+21,38868538,AAGAA,A,,,UW List,coordinates,TRUE
+21,38862575,C,T,,,UW List,coordinates,TRUE
+21,38877746,G,GG,,,UW List,coordinates,TRUE
+21,38853064,A,AA,,,UW List,coordinates,TRUE
+21,38862695,C,T,,,UW List,coordinates,TRUE
+21,38862468,TCTCTT,T,,,UW List,coordinates,TRUE
+21,38877594,AA,A,,,UW List,coordinates,TRUE

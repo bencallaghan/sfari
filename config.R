@@ -26,8 +26,10 @@ gene.i <- data.frame(name = "DYRK1A",
 # Config: Options ----------------------------------------------------------
 
 opt.annovar.cache = FALSE # If TRUE, check for cached copy of annovar results in temp before rerunning 
-opt.generanks.cache = TRUE # If TRUE, check for existing final gene ranking, if false recalculate gene rankings
+opt.generanks.cache = FALSE # If TRUE, check for existing final gene ranking, if false recalculate gene rankings
 opt.session.local = FALSE # If TRUE, changes input / output directories 
+
+dir.home = "/home/echu113/ws/sfari/"
 
 # If you're running locally (on a desktop or laptop) you need to run R or Rstudio with sudo priviliges
 # and make sure you're running in a folder in which you've got read / write privileges

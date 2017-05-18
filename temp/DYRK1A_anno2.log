@@ -3,10 +3,10 @@ ANNOVAR Version:
 ANNOVAR Information:
 	For questions, comments, documentation, bug reports and program update, please visit http://www.openbioinformatics.org/annovar/
 ANNOVAR Command:
-	/space/bin/annovar/annotate_variation.pl /home/bcallaghan/Projects/SFARI/temp/DYRK1A_anno_in /space/bin/annovar/humandb -filter -dbtype cadd -buildver hg19 -out /home/bcallaghan/Projects/SFARI/temp/DYRK1A_anno2 -otherinfo
+	/space/bin/annovar/annotate_variation.pl /home/echu113/ws/sfari/temp/DYRK1A_anno_in /space/bin/annovar/humandb -filter -dbtype cadd -buildver hg19 -out /home/echu113/ws/sfari/temp/DYRK1A_anno2 -otherinfo
 ANNOVAR Started:
-	Wed Sep 14 11:07:23 2016
-NOTICE: Variants matching filtering criteria are written to /home/bcallaghan/Projects/SFARI/temp/DYRK1A_anno2.hg19_cadd_dropped, other variants are written to /home/bcallaghan/Projects/SFARI/temp/DYRK1A_anno2.hg19_cadd_filtered
+	Thu May 18 12:38:43 2017
+NOTICE: Variants matching filtering criteria are written to /home/echu113/ws/sfari/temp/DYRK1A_anno2.hg19_cadd_dropped, other variants are written to /home/echu113/ws/sfari/temp/DYRK1A_anno2.hg19_cadd_filtered
 NOTICE: Processing next batch with 295641 unique variants in 295641 input lines
 NOTICE: Database index loaded. Total number of bins is 14293554 and the number of bins to be scanned is 493
 NOTICE: Scanning filter database /space/bin/annovar/humandb/hg19_cadd.txt...Done
