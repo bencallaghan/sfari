@@ -58,10 +58,25 @@ ggplot(sample_n(gene.metrics,1000), aes(x = as.numeric(V1), y = as.numeric(V6), 
 # Literature / biochemical assay variant query ---------------------------
 print("Querying for variants of interest:")
 print(query.variants)
-variants <- vars.filtered; query <- query.variants
-queried <- query_variants(vars.filtered, query.variants)
-queried %>% dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
-res.queried
+# variants <- vars.filtered
+# query <- query.variants
+# Run annovar anew on coordinate queries
+## ERIC ALSO HERE!!
+# Map other kinds of queries to vars.filtered
+query.variants %>% filter(querytype != "coordinates") -> query.variants.other
+
+query.variants %>% 
+  filter(querytype == "coordinates") %>% 
+  select(Chrom, Start, Stop, Ref, Alt) -> query.variants.coordinates.anno.in
+
+queried.coordinates <- annovar_call(query.variants.coordinates.anno.in)
+
+queried.coordinates %>% dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried.coordinates
+
+queried.map <- query_variants(vars.filtered, query.variants.other)
+queried.map %>% dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried.map
+
+res.queried <- rbind(res.queried.coordinates, res.queried.map) 
 
 
 # Calculated control variants --------------------------------------------

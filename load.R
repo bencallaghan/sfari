@@ -139,8 +139,8 @@ brain.expressed.gene.list <- read.table("inputs/marjan_brain_expressed_gene_list
 
 # Query variants
 
-# query.variants <- read.table("inputs/DYRK1A_query_variants.csv", fill=T,header = T, sep = ",") #* Add different path for each gene in main
-query.variants <- read.table(path.query.variants, fill=T,header = T, sep = "," ) #* Add different path for each gene in main
+# query.variants <- read.table("inputs/DYRK1A_query_variants.csv", fill=T,header = T, sep = ",") 
+query.variants <- read.table(path.query.variants, fill=T,header = T, sep = "," ) 
 # query.variants <- read.table("inputs/DYRK1A_query_variants_0413.csv", fill=T,header = T, sep = "," ) 
 
 ###### Custom sequence input

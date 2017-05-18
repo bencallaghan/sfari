@@ -1,11 +1,11 @@
-chr,pos,ref,alt,cdna,aachange,Source,querytype,denovo
-21,38865466,G,A,,,UW List,coordinates,TRUE
-21,38845116,CAT,C,,,UW List,coordinates,TRUE
-21,38877833,GC,G,,,UW List,coordinates,TRUE
-21,38868538,AAGAA,A,,,UW List,coordinates,TRUE
-21,38862575,C,T,,,UW List,coordinates,TRUE
-21,38877746,G,GG,,,UW List,coordinates,TRUE
-21,38853064,A,AA,,,UW List,coordinates,TRUE
-21,38862695,C,T,,,UW List,coordinates,TRUE
-21,38862468,TCTCTT,T,,,UW List,coordinates,TRUE
-21,38877594,AA,A,,,UW List,coordinates,TRUE
+Chrom,Start,Stop,Ref,Alt,cdna,aachange,Source,querytype,denovo
+21,38865466,38865466,G,A,,,UW List,coordinates,TRUE
+21,38845117,38845118,AT,-,,,UW List,coordinates,TRUE
+21,38877834,38877834,C,-,,,UW List,coordinates,TRUE
+21,38868539,38868542,AGAA,-,,,UW List,coordinates,TRUE
+21,38862575,38862575,C,T,,,UW List,coordinates,TRUE
+21,38877746,38877747,-,G,,,UW List,coordinates,TRUE
+21,38853064,38853065,-,A,,,UW List,coordinates,TRUE
+21,38862695,38862695,C,T,,,UW List,coordinates,TRUE
+21,38862468,38862472,CTCTT,-,,,UW List,coordinates,TRUE
+21,38877595,38877595,A,-,,,UW List,coordinates,TRUE

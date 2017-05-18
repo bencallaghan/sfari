@@ -1014,3 +1014,24 @@ logfile_writeline <- function(line){
   cat(paste0(line,'\n'), file = log_con)
 }
 
+### ERIC RIGHT HERE
+annovar_call <- function(anno_in){
+  # anno_in should be a dataframe with columns: chr, start, stop, ref, alt
+  # Create an annovar input file
+  write.table(anno.df, file = paste0(dir.temp,"query_anno_in"), quote = FALSE, sep="\t", row.names = FALSE, col.names = FALSE)
+
+  # Create and run annovar command for input file
+  annocmd <- paste0("perl /space/bin/annovar/table_annovar.pl ", path.anno.in, " /space/bin/annovar/humandb/ -buildver hg19 -out ", dir.temp,as.character(gene.i$name), "_anno -remove -protocol refGene,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp135,ljb_all,exac03,cadd -otherinfo -operation g,r,f,f,f,f,f,f -nastring . -csvout")
+  cmd.out <- run.remote(cmd=annocmd , remote= "apu")
+
+
+  # Run annovar a second time for Phred-scaled CADD scores
+  annocmd2 <- paste0("perl /space/bin/annovar/annotate_variation.pl ", path.anno.in, " /space/bin/annovar/humandb -filter -dbtype cadd -buildver hg19 -out ",
+                     dir.temp,as.character(gene.i$name), "_anno2 -otherinfo")
+  cmd.out <- run.remote(cmd=annocmd2 , remote= "-q apu",stderr.redirect=F)
+  
+  
+}
+
+
+
