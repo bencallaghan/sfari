@@ -23,11 +23,15 @@ sh dump_marvdb.sh
 ## Usage - setup
 
 ### Setup Config File
+
 Edit config.R with HUGO gene symbol, specify transcript, chromosome number
 
 ### Setup Query Variants File
+
 Copy template query file (inputs/DYRK1A_query_variants.csv)
+
 Edit variants file 
+
 Save file with name GENENAME_query_variants.csv
 
 ## Usage - Variant Prioritisation
