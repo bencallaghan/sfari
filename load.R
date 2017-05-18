@@ -111,8 +111,9 @@ gene.metrics <- read.table(path.gene.metrics, header = F, sep = "\t", fill=TRUE)
 
 # marv.res <- read.csv(path.marv) # Change to marv.res
 # marv.res <- read.table("inputs/marv.allvariants_27-09-2016.csv",sep="\t", header = T)
-marv.res <- read.table("inputs/marvdbdump-03-07-17.csv", header = T, fill = T, sep = "\t") 
-marv.res <- read.table("inputs/marvdbdump-04-04-17.csv", header = T, fill = T, sep = "\t", comment.char = "" ) 
+#marv.res <- read.table("inputs/marvdbdump-03-07-17.csv", header = T, fill = T, sep = "\t") 
+#marv.res <- read.table("inputs/marvdbdump-04-04-17.csv", header = T, fill = T, sep = "\t", comment.char = "" ) 
+marv.res <- read.table("inputs/marv_variants.csv", header = T, fill = T, sep = "\t", comment.char = "")
 
 
 # Pull in ranked gene list (from prior runs - check opt.generanks.cache to redo this ranking)

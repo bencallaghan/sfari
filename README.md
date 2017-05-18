@@ -1,19 +1,68 @@
-# sfari project R scripts
+# SFARI Variant Prioritisation Pipeline
+
+## Introduction
+Computational pipeline to identify variants of interest for functional prioritisation in SFARI collaboration's model organism systems.
+
+## Install 
+
+On pavlab servers, clone the project:
+
+```
+mkdir sfari/
+cd sfari/
+git clone https://github.com/bencallaghan/sfari
+```
 
 
-R code for the SFARI project
+Fetch updated files from MARVdb:
+```
+sh dump_marvdb.sh
+```
 
-5 main scripts:
 
-* main.R - "wrapper" script - runs everything else, loads dependencies, can make loops for running > 1 gene
-* func.R - contains all functions - run this before everything else to load necessary functions!
-* load.R - loads necessary files - annovar, snap2, exac, etc etc
+## Usage - setup
+
+### SSH keys
+
+Are you set up for passwordless ssh with keys? If no:
+http://www.chibi.ubc.ca/faculty/pavlidis/wiki/display/PavLab/Connecting+to+the+Servers
+
+Also for fixing the hostname verification failed problem that seems to crop up with Chalmers:
+https://askubuntu.com/questions/45679/ssh-connection-problem-with-host-key-verification-failed-error
+
+### Setup Config File
+
+Edit config.R with HUGO gene symbol, specify transcript, chromosome number
+
+### Setup Query Variants File
+
+Copy template query file (inputs/DYRK1A_query_variants.csv)
+
+Edit variants file 
+
+Save file with name GENENAME_query_variants.csv
+
+## Usage - Variant Prioritisation
+
+Run R scripts
+```
+R main.R
+```
+
+## Project Details
+
+Main scripts:
+
+* main.R - wrapper script - runs other scripts and sources dependencies
+* config.R - loads options - edit this file for each run
+* func.R - loads necessary functions
+* load.R - loads necessary files - annovar, snap2, exac, etc 
 * clean.R - data cleaning, harmonizing steps
-* do.R - does the meat of the processing work
+* do.R - does the variant prioritisation
 
 main project directories:
 
 * ./ - home for the scripts and subdirectories
-* ./inputs/  - where to put gene-specific and general input files - load them with load.R
-* ./outputs/  - where a lot of plots, tables, etc spits out. Can organise into gene - specific folders
-* ./temp/ - store intermediate files - should be able to completely delete contents at any time with no ill effects (other than potentially having to regenerate whatever files were inside
+* ./inputs/  - general input files and query files go here
+* ./outputs/  - plots + tables from variant prioritisation output here
+* ./temp/ - store intermediate files - should be able to completely delete contents at any time 
