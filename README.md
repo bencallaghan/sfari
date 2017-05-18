@@ -41,9 +41,14 @@ Edit config.R with HUGO gene symbol, specify transcript, chromosome number
 2. Edit query variants file 
 
 Variants file should be a .csv with nine columns:
+
 querytype column specifies the type of query the script makes:
 if "cdna":
 report variant in cdna column as form 
+
+if "coordinates"
+coordinate queries should be 1-based
+https://www.biostars.org/p/84686/
 
 | chr | pos | ref | alt | cdna | aachange | Source | X   |querytype| denovo |
 | --- | --- | --- | --- | ---  | ---      | ---    | --- | ---     | ---    |
