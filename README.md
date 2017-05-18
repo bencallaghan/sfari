@@ -1,7 +1,40 @@
-# sfari project R scripts
+# SFARI Variant Prioritisation Pipeline
+
+## Introduction
+Computational pipeline to identify variants of interest for functional prioritisation in SFARI collaboration's model organism systems.
+
+# Install 
+
+On pavlab servers, clone the project:
+
+```
+mkdir sfari/
+cd sfari/
+git clone https://github.com/bencallaghan/sfari
+```
 
 
-R code for the SFARI project
+Fetch updated files from MARVdb:
+```
+sh dump_marvdb.sh
+```
+
+
+# Usage
+
+### Config File
+Edit config.R with HUGO gene symbol, specify transcript, chromosome number
+
+### Query Variants File
+Copy template query file (inputs/DYRK1A_query_variants.csv)
+Edit variants file 
+Save file with name GENENAME_query_variants.csv
+
+
+Run R scripts
+```
+R main.R
+```
 
 5 main scripts:
 
