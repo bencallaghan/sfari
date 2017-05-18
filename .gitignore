@@ -1,3 +1,17 @@
 .Rproj.user
 .Rhistory
 .RData
+
+#Directory
+plots/*
+temp/*
+outputs/*
+
+#Filetypes
+*.pdf
+*.csv
+*.png
+
+
+
+*#
