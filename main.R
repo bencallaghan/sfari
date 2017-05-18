@@ -37,24 +37,16 @@ library(GGally)
 # Gene is either a single string or a vector of strings (a gene list)
 # gene.list <- "PTEN" 
 
+# Setup: Variant Prioritisation run specifications
 
-gene.list <- data.frame(name = c("PTEN","TBR1", "GRIN2B", "DYRK1A","SYNGAP1"),
-                        transcript = c("NM_000314","NM_006593","NM_000834","NM_001396","NM_006772"),
-                        chromosome = c(10,2,12,21,6))
-i <- 1 
-gene.i <- gene.list[i,]
+source("config.R")
 
-opt.annovar.cache = FALSE # If TRUE, check for cached copy of annovar results in temp before rerunning 
-opt.generanks.cache = TRUE # If TRUE, check for existing final gene ranking, if false recalculate gene rankings
-opt.session.local = FALSE # If TRUE, change all directories accordingly
-# If you're running locally (on a desktop or laptop) need to run rstudio with sudo priviliges
-# and make sure you're running in a folder you've got read/write
-# For me: I run sudo sshfs to mount my Projects folder and run Rstudio on mounted project directory
 
 # Setup: Environment ------------------------------------------------------
-
+# Should setwd() in project directory
+# Need to change directories to match your own directory structure
 if(opt.session.local == FALSE){
-  setwd("/home/bcallaghan/Projects/SFARI/")
+  #setwd("/home/bcallaghan/Projects/SFARI/")
   dir.home <- "/home/bcallaghan/Projects/SFARI/"
   dir.inputs <- "/home/bcallaghan/Projects/SFARI/inputs/"
   dir.outputs.parent <- ("/home/bcallaghan/Projects/SFARI/outputs/")
@@ -63,7 +55,7 @@ if(opt.session.local == FALSE){
   dir.cor.plots <- "/home/bcallaghan/Projects/SFARI/plots/corr"
   dir.temp <- "/home/bcallaghan/Projects/SFARI/temp/"
 } else{
-  setwd("/home/bcallaghan/OttoSu/Projects/SFARI")
+  #setwd("/home/bcallaghan/OttoSu/Projects/SFARI")
   dir.home <- "/home/bcallaghan/OttoSu/Projects/SFARI/"
   dir.inputs <- "/home/bcallaghan/OttoSu/Projects/SFARI/inputs/"
   dir.outputs.parent <- ("/home/bcallaghan/OttoSu/Projects/SFARI/outputs/")
