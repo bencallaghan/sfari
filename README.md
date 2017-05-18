@@ -44,10 +44,10 @@ Variants file should be a .csv with nine columns:
 querytype column specifies the type of query the script makes:
 if "cdna":
 report variant in cdna column as form 
-| chr | pos | ref | alt | cdna | aachange | Source | X | querytype | denovo |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-|21|NA|A860T| NA| NA| NA| NA| NA| NA|NA |
+| chr | pos | ref | alt | cdna | aachange | Source | X   |querytype| denovo |
+| --- | --- | --- | --- | ---  | ---      | ---    | --- | ---     | ---    |
+|21   |NA   |A860T| NA  | NA   | NA       | NA     | NA  | NA      |NA      |
 
 
 3. Save file with name GENENAME_query_variants.csv
