@@ -36,11 +36,21 @@ Edit config.R with HUGO gene symbol, specify transcript, chromosome number
 
 ### Setup Query Variants File
 
-Copy template query file (inputs/DYRK1A_query_variants.csv)
+1. Copy template query variants file (inputs/DYRK1A_query_variants.csv)
 
-Edit variants file 
+2. Edit query variants file 
 
-Save file with name GENENAME_query_variants.csv
+Variants file should be a .csv with nine columns:
+querytype column specifies the type of query the script makes:
+if "cdna":
+report variant in cdna column as form 
+
+| chr | pos | ref | alt | cdna | aachange | Source | X   |querytype| denovo |
+| --- | --- | --- | --- | ---  | ---      | ---    | --- | ---     | ---    |
+|21   |NA   |A860T| NA  | NA   | NA       | NA     | NA  | NA      |NA      |
+
+
+3. Save file with name GENENAME_query_variants.csv
 
 ## Usage - Variant Prioritisation
 
