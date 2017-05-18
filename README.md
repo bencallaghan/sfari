@@ -3,7 +3,7 @@
 ## Introduction
 Computational pipeline to identify variants of interest for functional prioritisation in SFARI collaboration's model organism systems.
 
-# Install 
+## Install 
 
 On pavlab servers, clone the project:
 
@@ -20,33 +20,37 @@ sh dump_marvdb.sh
 ```
 
 
-# Usage
+## Usage - setup
 
-### Config File
+### Setup Config File
 Edit config.R with HUGO gene symbol, specify transcript, chromosome number
 
-### Query Variants File
+### Setup Query Variants File
 Copy template query file (inputs/DYRK1A_query_variants.csv)
 Edit variants file 
 Save file with name GENENAME_query_variants.csv
 
+## Usage - Variant Prioritisation
 
 Run R scripts
 ```
 R main.R
 ```
 
-5 main scripts:
+## Project Details
 
-* main.R - "wrapper" script - runs everything else, loads dependencies, can make loops for running > 1 gene
-* func.R - contains all functions - run this before everything else to load necessary functions!
-* load.R - loads necessary files - annovar, snap2, exac, etc etc
+Main scripts:
+
+* main.R - wrapper script - runs other scripts and sources dependencies
+* config.R - loads options - edit this file for each run
+* func.R - loads necessary functions
+* load.R - loads necessary files - annovar, snap2, exac, etc 
 * clean.R - data cleaning, harmonizing steps
-* do.R - does the meat of the processing work
+* do.R - does the variant prioritisation
 
 main project directories:
 
 * ./ - home for the scripts and subdirectories
-* ./inputs/  - where to put gene-specific and general input files - load them with load.R
-* ./outputs/  - where a lot of plots, tables, etc spits out. Can organise into gene - specific folders
-* ./temp/ - store intermediate files - should be able to completely delete contents at any time with no ill effects (other than potentially having to regenerate whatever files were inside
+* ./inputs/  - general input files and query files go here
+* ./outputs/  - plots + tables from variant prioritisation output here
+* ./temp/ - store intermediate files - should be able to completely delete contents at any time 
