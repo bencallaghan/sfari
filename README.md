@@ -22,6 +22,14 @@ sh dump_marvdb.sh
 
 ## Usage - setup
 
+### SSH keys
+
+Are you set up for passwordless ssh with keys? If no:
+http://www.chibi.ubc.ca/faculty/pavlidis/wiki/display/PavLab/Connecting+to+the+Servers
+
+Also for fixing the hostname verification failed problem that seems to crop up with Chalmers:
+https://askubuntu.com/questions/45679/ssh-connection-problem-with-host-key-verification-failed-error
+
 ### Setup Config File
 
 Edit config.R with HUGO gene symbol, specify transcript, chromosome number
