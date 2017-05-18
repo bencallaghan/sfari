@@ -60,7 +60,7 @@ print("Querying for variants of interest:")
 print(query.variants)
 variants <- vars.filtered; query <- query.variants
 queried <- query_variants(vars.filtered, query.variants)
-queried %>% select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
+queried %>% dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried
 res.queried
 
 
@@ -70,13 +70,13 @@ snap2.quants <- quantile(vars.filtered$snap2, probs = seq(0,1,.1), na.rm = T)
 
 vars.filtered %>% 
   filter(snap2 < 0, CADD.phred < 15, exac03 > 0) %>% 
-  select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03) %>% 
+  dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03) %>% 
   mutate(Source = "negative controls") %>% mutate(denovo = NA) -> res.population.controls
 
 
 vars.filtered %>% 
   filter(snap2 > 0, CADD.phred > 20, exac03 == 0) %>% 
-  select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03) %>% 
+  dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03) %>% 
   mutate(Source = "calculated positive controls") %>% mutate(denovo = NA) -> res.calculated.positives
 
 # Outputs ----------------------------------------

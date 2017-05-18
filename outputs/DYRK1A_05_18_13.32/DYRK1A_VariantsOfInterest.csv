@@ -1,0 +1,44 @@
+"aachange","cdna","coordinate.string","Func.refGene","ExonicFunc.refGene","CADD.phred","snap2","exac03","Source","denovo"
+"0",NA,"21:38865466-38865466:G/A",NA,NA,NA,NA,NA,"UW List","TRUE"
+"0",NA,"21:38845117-38845117:CAT/C",NA,NA,NA,NA,NA,"UW List","TRUE"
+"0",NA,"21:38877833-38877833:GC/G",NA,NA,NA,NA,NA,"UW List","TRUE"
+"0",NA,"21:38868538-38868538:AAGAA/A",NA,NA,NA,NA,NA,"UW List","TRUE"
+"R255X","C763T","21:38862575-38862575:C/T","exonic","stopgain","50",NA,"0","UW List","TRUE"
+"0",NA,"21:38877746-38877746:G/GG",NA,NA,NA,NA,NA,"UW List","TRUE"
+"0",NA,"21:38853064-38853064:A/AA",NA,NA,NA,NA,NA,"UW List","TRUE"
+"L295F","C883T","21:38862695-38862695:C/T","exonic","nonsynonymous SNV","33","23","0","UW List","TRUE"
+"0",NA,"21:38862468-38862468:TCTCTT/T",NA,NA,NA,NA,NA,"UW List","TRUE"
+"0",NA,"21:38877594-38877594:AA/A",NA,NA,NA,NA,NA,"UW List","TRUE"
+"S57P","T169C","21:38845144-38845144:T/C","exonic","nonsynonymous SNV","10.32","-31","4.969e-05","negative controls",NA
+"E181D","G543T","21:38858795-38858795:G/T","exonic","nonsynonymous SNV","13.24","-8","8.406e-06","negative controls",NA
+"Q267H","A801T","21:38862613-38862613:A/T","exonic","nonsynonymous SNV","12.79","-60","8.244e-06","negative controls",NA
+"M269I","G807A","21:38862619-38862619:G/A","exonic","nonsynonymous SNV","11.12","-43","8.244e-06","negative controls",NA
+"S282N","G845A","21:38862657-38862657:G/A","exonic","nonsynonymous SNV","13.76","-57","2.473e-05","negative controls",NA
+"Q313H","G939T","21:38862751-38862751:G/T","exonic","nonsynonymous SNV","12.9","-76","8.327e-06","negative controls",NA
+"D339G","A1016G","21:38865383-38865383:A/G","exonic","nonsynonymous SNV","13.46","-15","8.239e-06","negative controls",NA
+"I379V","A1135G","21:38868456-38868456:A/G","exonic","nonsynonymous SNV","12.19","-66","8.27e-06","negative controls",NA
+"H383R","A1148G","21:38868469-38868469:A/G","exonic","nonsynonymous SNV","13.63","-3","8.265e-06","negative controls",NA
+"T402S","C1205G","21:38868526-38868526:C/G","exonic","nonsynonymous SNV","9.182","-88","7.452e-05","negative controls",NA
+"F562Y","T1685A","21:38884227-38884227:T/A","exonic","nonsynonymous SNV","1.774","-27","8.278e-06","negative controls",NA
+"P565R","C1694G","21:38884236-38884236:C/G","exonic","nonsynonymous SNV","0.074","-52","8.259e-06","negative controls",NA
+"T571A","A1711G","21:38884253-38884253:A/G","exonic","nonsynonymous SNV","8.781","-13","1.649e-05","negative controls",NA
+"T571S","C1712G","21:38884254-38884254:C/G","exonic","nonsynonymous SNV","2.157","-48","3.298e-05","negative controls",NA
+"T578A","A1732G","21:38884274-38884274:A/G","exonic","nonsynonymous SNV","14.33","-23","3.296e-05","negative controls",NA
+"Q594K","C1780A","21:38884322-38884322:C/A","exonic","nonsynonymous SNV","14.2","-43","8.241e-06","negative controls",NA
+"A597T","G1789A","21:38884331-38884331:G/A","exonic","nonsynonymous SNV","11.15","-60","8.244e-06","negative controls",NA
+"H612Y","C1834T","21:38884376-38884376:C/T","exonic","nonsynonymous SNV","14.42","-21","8.245e-06","negative controls",NA
+"H618Q","C1854G","21:38884396-38884396:C/G","exonic","nonsynonymous SNV","11.55","-2","8.24e-06","negative controls",NA
+"N634D","A1900G","21:38884442-38884442:A/G","exonic","nonsynonymous SNV","12.83","-6","8.238e-06","negative controls",NA
+"N634S","A1901G","21:38884443-38884443:A/G","exonic","nonsynonymous SNV","8.975","-47","4.119e-05","negative controls",NA
+"T637A","A1909G","21:38884451-38884451:A/G","exonic","nonsynonymous SNV","11.07","-4","8.238e-06","negative controls",NA
+"N638S","A1913G","21:38884455-38884455:A/G","exonic","nonsynonymous SNV","7.226","-41","4.119e-05","negative controls",NA
+"V648I","G1942A","21:38884484-38884484:G/A","exonic","nonsynonymous SNV","14.95","-43","8.237e-06","negative controls",NA
+"Q675H","A2025C","21:38884567-38884567:A/C","exonic","nonsynonymous SNV","9.19","-38","8.237e-06","negative controls",NA
+"N677S","A2030G","21:38884572-38884572:A/G","exonic","nonsynonymous SNV","12.82","-35","1.647e-05","negative controls",NA
+"N695S","A2084G","21:38884626-38884626:A/G","exonic","nonsynonymous SNV","12.23","-20","8.237e-06","negative controls",NA
+"V700I","G2098A","21:38884640-38884640:G/A","exonic","nonsynonymous SNV","11.56","-55","3e-04","negative controls",NA
+"Y705F","A2114T","21:38884656-38884656:A/T","exonic","nonsynonymous SNV","5.642","-2","8.237e-06","negative controls",NA
+"I714V","A2140G","21:38884682-38884682:A/G","exonic","nonsynonymous SNV","10.05","-28","1.647e-05","negative controls",NA
+"H717Y","C2149T","21:38884691-38884691:C/T","exonic","nonsynonymous SNV","12.48","-28","8.237e-06","negative controls",NA
+"M739L","A2215T","21:38884757-38884757:A/T","exonic","nonsynonymous SNV","11.25","-21","5.766e-05","negative controls",NA
+"T751S","A2251T","21:38884793-38884793:A/T","exonic","nonsynonymous SNV","13.33","-5","9.067e-05","negative controls",NA

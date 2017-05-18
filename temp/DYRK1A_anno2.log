@@ -5,7 +5,7 @@ ANNOVAR Information:
 ANNOVAR Command:
 	/space/bin/annovar/annotate_variation.pl /home/echu113/ws/sfari/temp/DYRK1A_anno_in /space/bin/annovar/humandb -filter -dbtype cadd -buildver hg19 -out /home/echu113/ws/sfari/temp/DYRK1A_anno2 -otherinfo
 ANNOVAR Started:
-	Thu May 18 12:38:43 2017
+	Thu May 18 13:35:12 2017
 NOTICE: Variants matching filtering criteria are written to /home/echu113/ws/sfari/temp/DYRK1A_anno2.hg19_cadd_dropped, other variants are written to /home/echu113/ws/sfari/temp/DYRK1A_anno2.hg19_cadd_filtered
 NOTICE: Processing next batch with 295641 unique variants in 295641 input lines
 NOTICE: Database index loaded. Total number of bins is 14293554 and the number of bins to be scanned is 493
