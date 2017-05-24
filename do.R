@@ -67,11 +67,24 @@ query.variants %>% filter(querytype != "coordinates") -> query.variants.other
 
 query.variants %>% 
   filter(querytype == "coordinates") %>% 
-  select(Chrom, Start, Stop, Ref, Alt) -> query.variants.coordinates.anno.in
+  dplyr::select(Chrom, Start, Stop, Ref, Alt) -> query.variants.coordinates.anno.in
 
-queried.coordinates <- annovar_call(query.variants.coordinates.anno.in)
+queried.coordinates.anno.results <- annovar_call(query.variants.coordinates.anno.in)
 
-queried.coordinates %>% dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried.coordinates
+queried.coordinates <- queried.coordinates.anno.results
+queried.coordinates$cdna <- queried.coordinates.anno.results$AAChange.refGene %>% as.character() %>% lapply(extractCdna) %>% unlist()
+queried.coordinates$aachange <- queried.coordinates.anno.results$AAChange.refGene %>% as.character() %>% lapply(extractAAChange) %>% unlist()
+
+# queried.coordinates$coordinate.string <- coordinate_strings(queried.coordinates, 1, 2, 3, 4, 5)
+queried.coordinates <- snap2.res %>% 
+  dplyr::select(aachange = V1, snap2 = V2) %>%
+  right_join(queried.coordinates)
+
+res.queried.coordinates <- query.variants %>% 
+  dplyr::select(Chr = Chrom, Start = Start, End = Stop, everything()) %>%
+  dplyr::select(-cdna, -aachange) %>% 
+  left_join(queried.coordinates, by = c("Chr", "Start", "End", "Ref", "Alt"))  %>% 
+  dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo)
 
 queried.map <- query_variants(vars.filtered, query.variants.other)
 queried.map %>% dplyr::select(aachange, cdna, coordinate.string, Func.refGene, ExonicFunc.refGene, CADD.phred, snap2, exac03,Source, denovo ) -> res.queried.map

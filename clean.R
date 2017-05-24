@@ -43,7 +43,7 @@ annovar.res$CADD.phred <- sapply(strsplit(as.character(annovar.res2$V2), ","), f
 vars.filtered <- filterGenomicVariants(annovar.res,gene.i$name,gene.i$transcript) #Filter for correct isoform and exonic variants
 
 # Add coordinate string column and cdna positions
-vars.filtered$coordinate.string <- coordinate_strings(vars.filtered, 1, 2 , 3, 4, 5)
+vars.filtered$coordinate.string <- coordinate_strings(vars.filtered, 1, 2, 3, 4, 5)
 cdnargx <- paste0(".*",gene.i$name,":",gene.i$transcript,":exon[0-9]+:c.([A-Z][0-9]+[A-Z]):p.[A-Z][0-9]+[A-Z].*")
 vars.filtered$cdna <- gsub(cdnargx,"\\1",vars.filtered$AAChange.refGene)
 vars.filtered$cdna.pos <- gsub("[A-Z]+([0-9]*)[A-Z]+","\\1",vars.filtered$cdna)

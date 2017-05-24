@@ -66,6 +66,8 @@ if(opt.session.local == FALSE){
 path.fasta <- paste0(dir.inputs,gene.i$name,".fa")
 path.annovar.out <- paste0(dir.temp,gene.i$name,"_anno.hg19_multianno.csv")
 path.annovar.out2 <- paste0(dir.temp,gene.i$name,"_anno2.hg19_cadd_dropped")
+path.annovar.additional.out <- paste0(dir.temp,gene.i$name,"_additional_anno.hg19_multianno.csv")
+path.annovar.additional.out2 <- paste0(dir.temp,gene.i$name,"_additional_anno2.hg19_cadd_dropped")
 path.pp.out <- paste0(dir.inputs, gene.i$name, "PP.tsv")
 path.marv <- paste0(dir.inputs,"MARV_ASD_muts_hg19_multianno.csv")
 path.anno.in <- paste0(dir.temp,as.character(gene.i$name),"_anno_in")

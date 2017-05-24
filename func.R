@@ -951,7 +951,7 @@ clean_query_variants <- function(query.variants){#*make this a funtion
   for(i in 1:nrow(query.variants)){
     print(i)
     if(query.variants$querytype[i] == "coordinates"){
-    query.variants$coordinate.string[i] <- coordinate_strings(query.variants[i,], 1,2,2,3,4)
+    query.variants$coordinate.string[i] <- coordinate_strings(query.variants[i,], 1,2,3,4,5)
     }else{
     query.variants$coordinate.string[i] <- NA
     }
@@ -1015,23 +1015,53 @@ logfile_writeline <- function(line){
 }
 
 ### ERIC RIGHT HERE
-annovar_call <- function(anno_in){
+annovar_call <- function(anno_in) {
   # anno_in should be a dataframe with columns: chr, start, stop, ref, alt
   # Create an annovar input file
-  write.table(anno.df, file = paste0(dir.temp,"query_anno_in"), quote = FALSE, sep="\t", row.names = FALSE, col.names = FALSE)
-
+  curr.query.anno.in.path <- paste0(dir.temp, as.character(gene.i$name), "_query_anno_in")
+  write.table(anno_in, file = curr.query.anno.in.path, quote = FALSE, sep="\t", row.names = FALSE, col.names = FALSE)
+  
   # Create and run annovar command for input file
-  annocmd <- paste0("perl /space/bin/annovar/table_annovar.pl ", path.anno.in, " /space/bin/annovar/humandb/ -buildver hg19 -out ", dir.temp,as.character(gene.i$name), "_anno -remove -protocol refGene,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp135,ljb_all,exac03,cadd -otherinfo -operation g,r,f,f,f,f,f,f -nastring . -csvout")
+  annocmd <- paste0("perl /space/bin/annovar/table_annovar.pl ", curr.query.anno.in.path, " /space/bin/annovar/humandb/ -buildver hg19 -out ", dir.temp,as.character(gene.i$name), "_additional_anno -remove -protocol refGene,genomicSuperDups,esp6500si_all,1000g2012apr_all,snp135,ljb_all,exac03,cadd -otherinfo -operation g,r,f,f,f,f,f,f -nastring . -csvout")
   cmd.out <- run.remote(cmd=annocmd , remote= "apu")
-
-
+  
+  
   # Run annovar a second time for Phred-scaled CADD scores
-  annocmd2 <- paste0("perl /space/bin/annovar/annotate_variation.pl ", path.anno.in, " /space/bin/annovar/humandb -filter -dbtype cadd -buildver hg19 -out ",
-                     dir.temp,as.character(gene.i$name), "_anno2 -otherinfo")
+  annocmd2 <- paste0("perl /space/bin/annovar/annotate_variation.pl ", curr.query.anno.in.path, " /space/bin/annovar/humandb -filter -dbtype cadd -buildver hg19 -out ",
+                     dir.temp,as.character(gene.i$name), "_additional_anno2 -otherinfo")
   cmd.out <- run.remote(cmd=annocmd2 , remote= "-q apu",stderr.redirect=F)
   
+  annovar.res <- read.csv(path.annovar.additional.out) #change to annovar.res
+  annovar.res2 <- read.table(path.annovar.additional.out2, sep="\t")
   
+  annovar.res.joined <- annovar.res %>% left_join(annovar.res2 %>% 
+                                                    dplyr::select(Chr = V3, Start = V4, End = V5, CADD.phred = V2))
+  
+  # vars.filtered <- filterGenomicVariants(annovar.res.joined, gene.i$name, gene.i$transcript) #Filter for correct isoform and exonic variants
+  # vars.filtered
+  
+  annovar.res.joined
 }
 
+extractCdna <- function(variantStrings) {
+  transcriptRegex <- paste0("^",gene.i$name,":",gene.i$transcript,":.*")
+  variantString <- grep(transcriptRegex, strsplit(variantStrings %>% as.character(), ",") %>% unlist(), value = TRUE)
+  cdnaString <- gsub(paste0("^", gene.i$name, ":", gene.i$transcript, ":exon[0-9]*:c\\."), "", variantString)
+  cdnaString <- gsub(paste0(":.*$"), "", cdnaString)
+  if (length(cdnaString) > 0 && nchar(cdnaString[[1]]) > 0) {
+    return(cdnaString)
+  }
+  return(".")
+}
+
+extractAAChange <- function(variantStrings) {
+  transcriptRegex <- paste0("^",gene.i$name,":",gene.i$transcript,":.*")
+  variantString <- grep(transcriptRegex, strsplit(variantStrings %>% as.character(), ",") %>% unlist(), value = TRUE)
+  aaChangeString <- gsub(paste0("^", gene.i$name, ":", gene.i$transcript, ".*:p\\."), "", variantString)
+  if (length(aaChangeString) > 0 && nchar(aaChangeString[[1]]) > 0) {
+    return(aaChangeString)
+  }
+  return(".")
+}
 
 
