@@ -27,6 +27,7 @@ dir.create(resultsDir)
 
 source("annovar_runner.R")
 source("snap2_runner.R")
+source("inspection_runner.R")
 
 # -------------------------------
 # MAIN
@@ -41,7 +42,9 @@ annotatedVariants <- annotatedVariants %>%
   dplyr::select(coordinates, aachange, cdna, 
                 mutation_type, denovo, Func.refGene, ExonicFunc.refGene,
                 CADD.phred, snap2, everything()) %>% 
-  arrange(source_type, Func.refGene, ExonicFunc.refGene, coordinates, CADD.phred, snap2)
+  arrange(source_type, Func.refGene, ExonicFunc.refGene, coordinates, denovo, CADD.phred, snap2)
+
+annotatedVariants <- annotatedVariants %>% annotatePossibleDuplicates()
 
 # output it in csv!
 annotatedVariants %>% write_csv(paste0(resultsDir, geneName, "_ANNOTATED_VARIANTS.csv"))

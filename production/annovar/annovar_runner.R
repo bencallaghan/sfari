@@ -4,7 +4,7 @@
 
 prepareAnnovarInputs <- function(variantsInput) {
   variantsInput %>% 
-    dplyr::select(id, coordinates) %>% 
+    dplyr::select(coordinates) %>% 
     filter(nchar(coordinates) > 0) %>%
     group_by(coordinates) %>% 
     filter(row_number() == 1) %>% 
@@ -57,7 +57,7 @@ annotateAnnovar <- function(variantsTibble) {
   annovarResults$aachange <- annovarResults$AAChange.refGene %>% as.character() %>% lapply(extractAAChange) %>% unlist()
   annovarResults <- annovarResults %>% 
     useCoordinateStrings() %>% 
-    dplyr::select(coordinates, aachange, cdna, Func.refGene, ExonicFunc.refGene, CADD.phred)
+    dplyr::select(coordinates, aachange, cdna, Func.refGene, ExonicFunc.refGene, CADD.phred, exac03)
   variantsTibble %>% 
     left_join(annovarResults, by = c("coordinates"))
 }
